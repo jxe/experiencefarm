@@ -1,0 +1,205 @@
+<style type="text/css">
+	body { font-family: optima; font-size: 14px; }
+	h2,p.x { padding: 0 5; margin: 0 0;}
+	p.x { 
+		margin-bottom: 10px; margin-top: -5px;
+	}
+	.x { padding: 5px; margin: 5px 0px; }
+	.xx { padding: 5px; margin: 5px 0px; background: white; }
+	.xy { padding: 5px; margin: 5px 0px; border: solid thin white; }
+	.bh { display: -webkit-box; -webkit-box-orient: horizontal; box-sizing: border-box; position: relative; }
+	.bv { height: 100%; display: -webkit-box; -webkit-box-orient: vertical;   box-sizing: border-box; position: relative; }	
+	.flex { display: block; -webkit-box-flex: 1.0 }
+	.m { min-height: 40px;}
+	.screen {
+		height: 560px;
+		width: 320px;
+		border: 1px solid #bbb;
+		margin: 30px 10px;
+		background: #ccc;
+		position: relative;
+		display: -webkit-box; -webkit-box-orient: vertical;   box-sizing: border-box; position: relative;
+	}
+
+	.note {
+		position: absolute; top: -20px; color: red; width: 100%; text-align: center;
+	}
+
+	.buttons > button {
+		width: 150px;
+	}
+
+	.play { position: absolute; top: 0px; left: 340px; }
+	.play2 { position: absolute; top: 0px; left: 670px; }
+	.pick { position: absolute; top: 620px; left: 10px; }
+	.record { position: absolute; top: 620px; left: 340px; }
+</style>
+
+<div class="home screen">
+	<div class="note">Home</div>
+	<h2 class="x">You're in Middletown CT</h2>
+	<p  class="x"><b>5 people</b> have made <b>3 experiences</b> here.</p>
+	<div class="xx m bh">
+		<div class="flex">
+			Joe and Dina made an experience for <b>Music Studios Archway</b> (to Dina Maccabee's "The Rooster")
+		</div>
+		<div>&#9654;</div>
+	</div>
+
+	<div class="xx m bh">
+		<div class="flex">
+			Max and Jason made an experience for <b>CFA Bike Rack</b> (to Black Sabbath's "Iron Man")
+		</div>
+		<div>&#9654;</div>
+	</div>
+
+	<div class="xx m bh">
+		<div class="flex">
+			Albert made an experience for <b>Whispering Wall</b> (to Terry Riley's "In C")
+		</div>
+		<div>&#9654;</div>
+	</div>
+
+	<div class="flex"></div>
+
+	<div class="xx m">
+		<b>Record your own!</b><br>
+		Collectively, we've made <b>366 experiences</b> <br>in <b>20 cities</b>.
+		The Song of the Week this week is Dina Maccabee's "The Rooster".
+	</div>
+</div>
+
+
+
+<div class="play screen">
+	<div class="note">Play</div>
+
+	<div class="x">
+		<b>Joe and Dina made this experience for Music Studios Archway</b>
+	</div>
+	<p style="margin-top: 5px; font-style:italic" class="x">
+		Ask a friend to join you by going to the same URL on their phone.  You will play Joe and your friend will play Dina.
+	</p>
+
+	<div style="text-align:center;font-size:28px">&#x275a;&#x275a;</div>
+	<div style="text-align:center">Waiting for your friend.</div>
+</div>
+
+
+
+<div class="play2 screen">
+	<div class="note">Playing</div>
+
+	<div class="x">
+		<b>Joe and Dina made this experience for Music Studios Archway</b>
+	</div>
+
+	<div style="margin-top:20px;" class="bh">
+		<div class="flex xx">
+			<div class="x" style="text-align:center">
+			Current suggestion is "Hum a resonant pitch"
+			<button class="xx">Accept</button>
+			</div>
+			
+		</div>
+	</div>
+
+	<div style="text-align:center; margin-top:20px; font-size:28px">&#9654;</div>
+	<div style="text-align:center">Playing the INTRO to<br>Dina Maccabee's "The Rooster" (20s left)</div>
+
+	<div class="flex x" style="margin-top:20px">
+		<div class='bh'>
+			<i style="display:block; margin-right:5px; color:#666">3s ago</i>
+			<div class="flex">Dina accepted the suggestion "Play Air Guitar".</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<div class="pick screen">
+	<div class="note">Record your own!</div>
+	<h2 class="x">You're in Middletown CT</h2>
+	<p class="x">Choose your start location</p>
+	<div class="xx m">
+		<b>Music Studios Archway</b><br>
+		Three experiences here
+	</div>
+
+	<div class="xx m">
+		<b>CFA Bike Rack</b><br>
+		One experience here.
+	</div>
+
+	<div class="xx m">
+		+ Add a location
+	</div>
+
+	<p style="margin-top:50px" class="x">Pick a song</p>
+
+	<div class="xx m">
+		<b>Dina Maccabee's "The Rooster"</b><br>
+		Song of the week!
+	</div>
+
+	<div class="xx m">
+		<b>Terry Riley's "In C"</b>
+	</div>
+
+	<div class="flex"></div>
+</div>
+
+
+<div class="record screen">
+	<div class="note">Recording</div>
+	<div class="bv">
+
+		<div class="x">
+			<b>You and Dina are making an experience for Music Studios Archway</b>
+		</div>
+
+		<div style="margin-top:20px;" class="bh">
+			<div class="flex xx">
+				<div class="x" style="text-align:center">
+				Dina suggested "Hum a resonant pitch"<br>
+				<button class="xx">Accept</button>
+				</div>
+				
+			</div>
+		</div>
+
+		<div style="text-align:center; margin-top:10px; font-size:28px">&#9654;</div>
+		<div style="text-align:center">Playing the INTRO to<br> Dina Maccabee's The Rooster (20s left)</div>
+
+		<div class="flex x" style="margin-top:20px">
+			<i style="color:#666">1s ago</i>
+			Dina accepted your suggestion (+10)<br>
+
+			<i style="color:#666">3s ago</i>
+			You suggested "Vocay Fry".
+		</div>
+
+		<div class="xx">
+			<b>Suggest something during THE INTRO</b>
+			<div class="bh">
+				<input class="flex" placeholder="Suggest a dance move...">
+				<button>Send</button>
+			</div>
+			<hr>
+			<div class="buttons">
+				<button style="background:gray">Dance Move</button>
+				<button>Fitness activity</button>
+				<button>Pose</button>
+				<button>Thought Feeling</button>
+				<button>Sounding</button>
+				<button>Interaction</button>
+				<button>Walking direction</button>
+				<button>Object to examine</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div style="position:absolute; top:2000px; width:1px; height:1px"></div>
