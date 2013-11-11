@@ -1,0 +1,123 @@
+<div class="play2 screen">
+	<div class="note">Playing</div>
+
+	<div class="x">
+		<b>Joe and Dina made this experience for Music Studios Archway</b>
+	</div>
+
+	<div style="margin-top:20px;" class="bh">
+		<div class="flex xx">
+			<div class="x" style="text-align:center">
+			Current suggestion is "Hum a resonant pitch"
+			<button class="xx">Accept</button>
+			</div>
+			
+		</div>
+	</div>
+
+	<div style="text-align:center; margin-top:20px; font-size:28px">&#9654;</div>
+	<div style="text-align:center">Playing the INTRO to<br>Dina Maccabee's "The Rooster" (20s left)</div>
+
+	<div class="flex x" style="margin-top:20px">
+		<div class='bh'>
+			<i style="display:block; margin-right:5px; color:#666">3s ago</i>
+			<div class="flex">Dina accepted the suggestion "Play Air Guitar".</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="record screen">
+	<div class="note">Recording</div>
+	<div class="bv">
+
+		<div class="x">
+			<b>You and Dina are making an experience for Music Studios Archway</b>
+		</div>
+
+		<div style="margin-top:20px;" class="bh">
+			<div class="flex xx">
+				<div class="x" style="text-align:center">
+				Dina suggested "Hum a resonant pitch"<br>
+				<button class="xx">Accept</button>
+				</div>
+				
+			</div>
+		</div>
+
+		<div style="text-align:center; margin-top:10px; font-size:28px">&#9654;</div>
+		<div style="text-align:center">Playing the INTRO to<br> Dina Maccabee's The Rooster (20s left)</div>
+
+		<div class="flex x" style="margin-top:20px">
+			<i style="color:#666">1s ago</i>
+			Dina accepted your suggestion (+10)<br>
+
+			<i style="color:#666">3s ago</i>
+			You suggested "Vocay Fry".
+		</div>
+
+		<div class="xx">
+			<b>Suggest something during THE INTRO</b>
+			<div class="bh">
+				<input class="flex" placeholder="Suggest a dance move...">
+				<button>Send</button>
+			</div>
+			<hr>
+			<div class="buttons">
+				<button style="background:gray">Dance Move</button>
+				<button>Fitness activity</button>
+				<button>Pose</button>
+				<button>Thought Feeling</button>
+				<button>Sounding</button>
+				<button>Interaction</button>
+				<button>Walking direction</button>
+				<button>Object to examine</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+Fireball(F, {
+
+	live_updating: {
+		'#actions':     "/recordings/$recording/actions[]",
+		'#suggestion':  "/recordings/$recording/suggestions_to/$myrole[1]",
+		'#experience':  "/experiences/$experience"
+	},
+
+	on_click: {
+
+		'#play': function(){
+
+		},
+		'#pause': function(){
+
+		},
+		'#accept': function(){
+			// also add it to experience for future people
+			q.domref("#actions").push({
+				role: "My name",
+				did: "accepted the suggestion to " + suggestion_text
+			});
+		},
+		'#reject': function(){
+			q.domref("#actions").push({
+				role: "My name",
+				did: "reject the suggestion to " + suggestion_text
+			});
+		},
+		'.suggestion_type': function(){
+			// highlight it
+		}
+	},
+
+	submit_handlers: {
+		'#suggestions': function(){
+			// push it on the right person's stack
+		}
+	}
+})
+
+</script>

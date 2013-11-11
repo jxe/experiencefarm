@@ -1,0 +1,26 @@
+Simple Firemapper test
+
+
+
+http://getbootstrap.com/examples/starter-template/
+
+
+DB.nearest_city()
+
+DB.experiences_in_city(city)
+DB.locations_in_city(city)
+DB.songs()
+DB.play_experience('my_name', player)
+DB.record_experience(city, start_loc, song, 'my_name', recorder)
+DB::Recording.pause()
+DB::Recording.resume()
+DB::Recording.suggest()
+DB::Recording.accept()
+
+Player.on_paused()
+Player.on_played()
+Player.configure()
+
+Recorder.configure()
+Recorder.on_suggested()
+

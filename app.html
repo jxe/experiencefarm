@@ -1,0 +1,15 @@
+<link rel="stylesheet" type="text/css" href="ppg.css">
+<script>
+var page = "home";
+
+Fireball(F, {
+	on_click: {
+		'#home': function(){ page = 'home'; }
+	},
+	visibility: {
+		".page": function(el){ return page == el.id; },
+
+	}
+});
+
+</script>
