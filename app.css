@@ -10,6 +10,11 @@
 	.bv { height: 100%; display: -webkit-box; -webkit-box-orient: vertical;   box-sizing: border-box; position: relative; }	
 	.flex { display: block; -webkit-box-flex: 1.0 }
 	.m { min-height: 40px;}
+	.page {
+		width: 320px;
+		background: #ccc;
+		display: -webkit-box; -webkit-box-orient: vertical;   box-sizing: border-box; position: relative;		
+	}
 	.screen {
 		height: 560px;
 		width: 320px;
