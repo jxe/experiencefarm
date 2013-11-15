@@ -1,4 +1,4 @@
-<div class="pick screen">
+<div id="compose" class="page">
 	<div class="note">Record your own!</div>
 	<h2 class="x">You're in Middletown CT</h2>
 	<p class="x">Choose your start location</p>
@@ -33,12 +33,12 @@
 
 
 <script type="text/javascript">
-Fireball(F, {
+Fireball("https://songwalks.firebaseio.com/", {
 
-	live_updating: {
-		'#locations':   "/cities/$city/locations[]",
-		'#songs':       "/songs[]",
-	},
+	// live_updating: {
+	// 	'#locations':   "/cities/$city/locations[]",
+	// 	'#songs':       "/songs[]",
+	// },
 
 	on_click: {
 

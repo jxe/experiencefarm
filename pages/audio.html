@@ -1,3 +1,10 @@
+<!--
+
+TODO:
+* fireball - on('cleared',
+* Fireball('#suggestions').delete(id)
+-->
+
 <style>
 #current_suggesion { margin-top:20px; text-align:center; }
 #audio_info { text-align:center; margin-top:20px; }
@@ -6,20 +13,20 @@
 </style>
 
 
-<div class="audio page">
+<div id="audio" class="page">
 	<div id="experience" class="x">
-		<b class="author_names">Joe and Dina</b>
-		<span class="did_what">made this experience / are making an experience</span> 
+		<b data-set="text:author_names">Joe and Dina</b>
+		<span data-set="text:did_what">made this experience / are making an experience</span> 
 		for
-		<b class="where">Music Studios Archway</b>
+		<b data-set="text:where">Music Studios Archway</b>
 	</div>
 
 	<div id="suggestions" class="bh flex xx x">
 	   <div class="suggestion">
-	      <span class="framing">
+	      <span data-set="text:framing">
 		      Current suggestion is / Dina suggested
 		   </span>
-		   <b class="text">
+		   <b data-set="text:text">
     		   "Hum a resonant pitch"
     	   </b>
 		   <button id="accept_suggestion" class="xx">Accept</button>
@@ -29,9 +36,9 @@
 
     <div id="audio_info">
         <audio></audio>
-        <div class="sigil">&#9654;</div>
-        Playing <b class="song_name">Dina Maccabee\'s "The Rooster"</b>
-        <span class="time_left">(20s left)</span>
+        <div data-set="text:sigil">&#9654;</div>
+        Playing <b data-set="text:song_name">Dina Maccabee\'s "The Rooster"</b>
+        <span data-set="text:time_left">(20s left)</span>
     </div>
 	
 	<div class="flex x" id="actions">
@@ -74,8 +81,7 @@
 
 
 <script type="text/javascript">
-var mode = "record";
-var my_name = "Joe";
+var mode, my_name, experience_id, room_id;
 
 // data model
 //   experience.authors = { id=>name }
@@ -88,6 +94,31 @@ var my_name = "Joe";
 // GOOD
 //  action = {who, what}
 
+// on compose
+
+function record(who, song_id, where){
+	page = 'audio';
+	mode = 'record';
+	my_name = who;
+	songName = song_id;
+	exp_id = F.child('/experiences').push({
+		where: where,
+		song: song_id,
+		authors: { who : who }
+	}).name();
+	room_id = F.child("/actions/" + exp_id).push().name();
+	F.child("/actions/" + exp_id + '/' + room_id).push({
+		who: who,
+		what: 'Joined'
+	});
+	Fireball.set('$experience_id', exp_id);
+	Fireball.set('$room_id', room_id);
+}
+
+		// '#actions':     "/actions/$experience_id/$room_id[]",
+		// '#suggestions': "/live_suggestions/$experience_id[]",
+		// '#experience':  "/experiences/$experience_id"
+
 
 // rooms/<ID>[] { assignments, starttime, is_full }  assignments= { role: name }
 // actions/<room_id>[] { who, what }
@@ -96,19 +127,19 @@ var my_name = "Joe";
 // audio/<ID>/{ song, state, t0 }
 
 
-Fireball(F, {
+Fireball("https://songwalks.firebaseio.com/", {
 
    init: function(){
       var audio = document.querySelector('audio');
-      window.dyn = F.dyn("audio/$experience_id");
+      window.dyn = F.dynamic("audio/$experience_id");
 
-		audio.addEventListener('play', function(){
-		   dyn.update({state: 'playing'});
-		})
+	  audio.addEventListener('play', function(){
+	  	dyn.update({state: 'playing'});
+	  })
 
-		audio.addEventListener('pause', function(){
-		   dyn.update({state: 'paused'});
-		})
+	  audio.addEventListener('pause', function(){
+	     dyn.update({state: 'paused'});
+	  })
 
       dyn.on('value', function(s){
 		   if (audio.src != songName) audio.src = songName;
@@ -116,17 +147,14 @@ Fireball(F, {
 			if (state == "playing") audio.play();
 			else {
 				audio.pause();
-				if (state == "paused:0") audio.currentTime = 0;
+				// if (state == "paused:0") audio.currentTime = 0;
 			}
-		});
-		
-		dyn.on('cleared', function(){
-   		audio.pause();
-		});
-		
-		audio.addEventListener('ended', function(){
-		   alert('ended!');
-		});
+	  });
+	  
+	  dyn.on('cleared', function(){ audio.pause(); });
+	  audio.addEventListener('ended', function(){ alert('ended!'); });
+
+	  record('Joe', 'rooster', '16th and valencia, sw corner');
    },
 
 	map: {
@@ -139,14 +167,16 @@ Fireball(F, {
 		'#suggestion_form': function(data){
 		   Fireball('#suggestions').push({
 		      who: my_name,
-		      what: data.what
+		      text: data[0].value
 		   });
+		   data[0].value = '';
 		}
 	},
 
    calculated_fields:{
       "#experience author_names":function(exp){
-         return Object.keys(exp.authors).map(function(k){ return exp.authors[k]; }).join(', ');
+      	if (!exp.authors) return;
+        return Object.keys(exp.authors).map(function(k){ return exp.authors[k]; }).join(', ');
       },
 
       "#experience did_what":function(exp){
@@ -154,8 +184,8 @@ Fireball(F, {
          else return "made this experience"; 
       },
 
-      "#current_suggestion framing":function(sugg){
-         if (mode == 'record') return sugg.from_name + " suggested";
+      "#suggestions framing":function(sugg){
+         if (mode == 'record') return sugg.who + " suggested";
          else return "Current suggestion is";
       },      
 
@@ -184,8 +214,10 @@ Fireball(F, {
 			Fireball("#actions").push({
 				who: my_name,
 				what: "accepted the suggestion to " + data.text
-			});
-			Fireball('#suggestions').delete(data.id);
+			})
+			var obj = {};
+			obj[data.id] = null;
+			Fireball('#suggestions').update(obj);
 		},
 		'#reject': function(b){
 		   var data = b.parentNode.data;
@@ -202,11 +234,7 @@ Fireball(F, {
 	},
 	
 	show_when:{
-	   "#suggestion_form": function(){ return mode == 'record'; },
-	   "#current_suggestion": function(){
-	      var latest = Fireball.latest("#current_suggestion");
-	      return latest && latest.id != last_suggestion_accepted;
-	   }
+	   "#suggestion_form": function(){ return mode == 'record'; }
 	}
 });
 

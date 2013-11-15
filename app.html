@@ -1,8 +1,11 @@
-<link rel="stylesheet" type="text/css" href="ppg.css">
+<script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
+<script type="text/javascript" src="fireball.js"></script>
+<link rel="stylesheet" type="text/css" href="app.css">
 <script>
 var page = "home";
+var F = new Firebase("https://songwalks.firebaseio.com/");
 
-Fireball(F, {
+Fireball("https://songwalks.firebaseio.com/", {
 	on_click: {
 		'#home': function(){ page = 'home'; }
 	},

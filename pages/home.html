@@ -1,4 +1,4 @@
-<div class="home screen">
+<div id="home" class="page">
 	<div class="note">Home</div>
 	<h2 class="x">You're in Middletown CT</h2>
 	<p  class="x"><b>5 people</b> have made <b>3 experiences</b> here.</p>
@@ -33,10 +33,10 @@
 </div>
 
 <script type="text/javascript">
-Fireball(F, {
+Fireball("https://songwalks.firebaseio.com/", {
 
 	live_updating: {
-		'#experiences': "/cities/$city/experiences[]",
+		// '#experiences': "/cities/$city/experiences[]",
 	},
 
 	on_click: {
@@ -62,6 +62,7 @@ Fireball(F, {
 		'#compose': function(){
 			page = 'compose';
 		}
+	}
 })
 
 </script>
