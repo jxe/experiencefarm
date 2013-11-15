@@ -1,62 +1,57 @@
-<div class="play2 screen">
-	<div class="note">Playing</div>
+<style>
+#current_suggesion { margin-top:20px; text-align:center; }
+#audio_info { text-align:center; margin-top:20px; }
+#audio_info .sigil { font-size:28px; }
+#events { margin-top:20px; }
+</style>
 
-	<div class="x">
-		<b>Joe and Dina made this experience for Music Studios Archway</b>
+
+<div class="audio page">
+	<div id="experience" class="x">
+		<b class="author_names">Joe and Dina</b>
+		<span class="did_what">made this experience / are making an experience</span> 
+		for
+		<b class="where">Music Studios Archway</b>
 	</div>
 
-	<div style="margin-top:20px;" class="bh">
-		<div class="flex xx">
-			<div class="x" style="text-align:center">
-			Current suggestion is "Hum a resonant pitch"
-			<button class="xx">Accept</button>
-			</div>
-			
-		</div>
+	<div id="suggestions" class="bh flex xx x">
+	   <div class="suggestion">
+	      <span class="framing">
+		      Current suggestion is / Dina suggested
+		   </span>
+		   <b class="text">
+    		   "Hum a resonant pitch"
+    	   </b>
+		   <button id="accept_suggestion" class="xx">Accept</button>
+    	</div>
 	</div>
 
-	<div style="text-align:center; margin-top:20px; font-size:28px">&#9654;</div>
-	<div style="text-align:center">Playing the INTRO to<br>Dina Maccabee's "The Rooster" (20s left)</div>
 
-	<div class="flex x" style="margin-top:20px">
-		<div class='bh'>
-			<i style="display:block; margin-right:5px; color:#666">3s ago</i>
-			<div class="flex">Dina accepted the suggestion "Play Air Guitar".</div>
-		</div>
-	</div>
-</div>
-
-
-<div class="record screen">
-	<div class="note">Recording</div>
-	<div class="bv">
-
-		<div class="x">
-			<b>You and Dina are making an experience for Music Studios Archway</b>
+    <div id="audio_info">
+        <audio></audio>
+        <div class="sigil">&#9654;</div>
+        Playing <b class="song_name">Dina Maccabee\'s "The Rooster"</b>
+        <span class="time_left">(20s left)</span>
+    </div>
+	
+	<div class="flex x" id="actions">
+	    <div class="action">
+			<i class="ts" style="color:#666">1s ago</i>
+			<b class="who">Dina</b>
+			<span class="what">accepted your suggestion</span>
 		</div>
 
-		<div style="margin-top:20px;" class="bh">
-			<div class="flex xx">
-				<div class="x" style="text-align:center">
-				Dina suggested "Hum a resonant pitch"<br>
-				<button class="xx">Accept</button>
-				</div>
-				
-			</div>
-		</div>
-
-		<div style="text-align:center; margin-top:10px; font-size:28px">&#9654;</div>
-		<div style="text-align:center">Playing the INTRO to<br> Dina Maccabee's The Rooster (20s left)</div>
-
-		<div class="flex x" style="margin-top:20px">
-			<i style="color:#666">1s ago</i>
-			Dina accepted your suggestion (+10)<br>
-
+        <!--
 			<i style="color:#666">3s ago</i>
 			You suggested "Vocay Fry".
-		</div>
 
-		<div class="xx">
+			<i style="display:block; margin-right:5px; color:#666">3s ago</i>
+			<div class="flex">Dina accepted the suggestion "Play Air Guitar".</div>
+		-->
+	</div>
+
+
+	<form id="suggestion_form" class="xx">
 			<b>Suggest something during THE INTRO</b>
 			<div class="bh">
 				<input class="flex" placeholder="Suggest a dance move...">
@@ -74,50 +69,146 @@
 				<button>Object to examine</button>
 			</div>
 		</div>
-	</div>
+	</form>
 </div>
 
 
 <script type="text/javascript">
+var mode = "record";
+var my_name = "Joe";
+
+// data model
+//   experience.authors = { id=>name }
+//   experience.where = place name
+//
+//  sugg = {from_name, text}
+// 
+//  audio_info = {song_name, base_url, state, t0}
+
+// GOOD
+//  action = {who, what}
+
+
+// rooms/<ID>[] { assignments, starttime, is_full }  assignments= { role: name }
+// actions/<room_id>[] { who, what }
+// experience/<ID>/{ authors, place }
+// suggestions/<ID>/to:<role>[] { who, what, tupe }
+// audio/<ID>/{ song, state, t0 }
+
+
 Fireball(F, {
 
-	live_updating: {
-		'#actions':     "/recordings/$recording/actions[]",
-		'#suggestion':  "/recordings/$recording/suggestions_to/$myrole[1]",
-		'#experience':  "/experiences/$experience"
+   init: function(){
+      var audio = document.querySelector('audio');
+      window.dyn = F.dyn("audio/$experience_id");
+
+		audio.addEventListener('play', function(){
+		   dyn.update({state: 'playing'});
+		})
+
+		audio.addEventListener('pause', function(){
+		   dyn.update({state: 'paused'});
+		})
+
+      dyn.on('value', function(s){
+		   if (audio.src != songName) audio.src = songName;
+			var state = s.val() || 'paused:0';
+			if (state == "playing") audio.play();
+			else {
+				audio.pause();
+				if (state == "paused:0") audio.currentTime = 0;
+			}
+		});
+		
+		dyn.on('cleared', function(){
+   		audio.pause();
+		});
+		
+		audio.addEventListener('ended', function(){
+		   alert('ended!');
+		});
+   },
+
+	map: {
+		'#actions':     "/actions/$experience_id/$room_id[]",
+		'#suggestions': "/live_suggestions/$experience_id[]",
+		'#experience':  "/experiences/$experience_id"
 	},
+
+	on_submit: {
+		'#suggestion_form': function(data){
+		   Fireball('#suggestions').push({
+		      who: my_name,
+		      what: data.what
+		   });
+		}
+	},
+
+   calculated_fields:{
+      "#experience author_names":function(exp){
+         return Object.keys(exp.authors).map(function(k){ return exp.authors[k]; }).join(', ');
+      },
+
+      "#experience did_what":function(exp){
+         if (mode == 'record') return "are making an experience";
+         else return "made this experience"; 
+      },
+
+      "#current_suggestion framing":function(sugg){
+         if (mode == 'record') return sugg.from_name + " suggested";
+         else return "Current suggestion is";
+      },      
+
+      "#audio_info sigil":function(aud){
+         return "&#9654;";
+      },
+
+      "#actions ts":function(act){
+         return "ts";
+      }
+   },
 
 	on_click: {
 
 		'#play': function(){
-
+         dyn.update({state:"playing"});
 		},
+
 		'#pause': function(){
+         dyn.update({state:"paused"});
+		},
 
-		},
-		'#accept': function(){
+		'#accept_suggestion': function(b){
+		   var data = b.parentNode.data;
 			// also add it to experience for future people
-			q.domref("#actions").push({
-				role: "My name",
-				did: "accepted the suggestion to " + suggestion_text
+			Fireball("#actions").push({
+				who: my_name,
+				what: "accepted the suggestion to " + data.text
 			});
+			Fireball('#suggestions').delete(data.id);
 		},
-		'#reject': function(){
-			q.domref("#actions").push({
-				role: "My name",
-				did: "reject the suggestion to " + suggestion_text
+		'#reject': function(b){
+		   var data = b.parentNode.data;
+			Fireball("#actions").push({
+				who: my_name,
+				what: "rejected the suggestion to " + data.text
 			});
+			Fireball('#suggestions').delete(data.id);
 		},
 		'.suggestion_type': function(){
 			// highlight it
+			alert('unimplemented');
 		}
 	},
-
-	submit_handlers: {
-		'#suggestions': function(){
-			// push it on the right person's stack
-		}
+	
+	show_when:{
+	   "#suggestion_form": function(){ return mode == 'record'; },
+	   "#current_suggestion": function(){
+	      var latest = Fireball.latest("#current_suggestion");
+	      return latest && latest.id != last_suggestion_accepted;
+	   }
 	}
-})
+});
+
 
 </script>
