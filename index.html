@@ -141,7 +141,7 @@ var page = "home";
 var F = new Firebase("http://songwalks.firebaseio.com/");
 var current_sound, show_browse, show_compose, 
 	next_flip_time, sorted_actions;
-var $ = document.getElementById;
+function $(x){ return document.getElementById(x); }
 
 Fireball(F, {
    map:{
