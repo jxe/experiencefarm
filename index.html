@@ -30,10 +30,28 @@
       <button id="new_experience">New experience</button>
       <button id="change_city">Change city</button>
    </div>
+
+
+
+
    <form id="compose_experience">
-      <input name="author_name" placeholder="Your name"><br>
-      <input name="to_name" placeholder="Dedicated to"><br>
-      <input name="placename" placeholder="Start location"><br>
+	A
+	<select name="quality">
+	<option>artful</option>
+	<option>athletic</option>
+	<option>challenging</option>
+	<option>disco</option>
+	<option>oddball</option>
+	<option>quiet</option>
+	<option>sweet</option>
+	<option>simple</option>
+	</select>
+	experience for
+      <input name="to_name" placeholder="Dedicated to">
+	starting
+      <input name="placename" placeholder="Start location">.<br>
+	by
+      <input name="author_name" placeholder="Your name">.<br>
    
       <select id="choose_song">
          <option>Choose song...</option>
@@ -43,10 +61,12 @@
          <option>Add...</option>
       </select><br>
 
-      <button type="submit">submit</button>      
       <a href="#" id="cancel_compose">cancel</a>
+      <button type="submit">Get Started</button>      
    </form>
 </div>
+
+
    
 <style>
 #map{ position: relative; }
@@ -256,6 +276,15 @@ Fireball(F, {
       
       "#experiences calctitle": function(exp){
          // TODO: make from start loc name and song name and authors
+
+	if (exp.quality){
+		var msg = "A " + exp.quality + " experience of &ldquo;" + exp.song_title + "&rdquo;.  ";
+		if (exp.to_name) msg += "With <b>" + exp.to_name + "</b> in mind.  ";
+		if (exp.author_name) msg += "By <b>" + (exp.author_name) + "</b>.  ";
+		if (exp.placename) msg+= "Starting at &ldquo;" + exp.placename + "&rdquo;";
+		return msg;
+	}
+
          if (exp.to_name){
 	         return "With <b>" + exp.to_name + "</b> in mind, <b>" + (exp.author_name || "Someone") + "</b>, came up with a way of enjoying &ldquo;" + exp.song_title + "&rdquo; starting at &ldquo;" + exp.placename + "&rdquo;";
          } else {
@@ -367,6 +396,7 @@ Fireball(F, {
          properties = opt.data;
          properties.song_id = opt.id;
          properties.author_name = form.author_name.value;
+         properties.quality = form.quality.value;
          properties.to_name = form.to_name.value;
          properties.placename = form.placename.value;
          var id = Fireball('#experiences').push(properties).name();
