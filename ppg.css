@@ -1,6 +1,32 @@
 html{ font-size: 18px; margin:0; padding:0; font-family: sans-serif;  }
 body{ margin:0; padding:0; position: relative; }
 
+header h1 { margin:0; text-align:center; font-size: 22px; display: inline; }
+header { background: #9f9; position: fixed; top: 0; width: 100%; }
+ul { margin:0; padding:0; }
+ul li { list-style: none; padding: 5px 10px; background: #eee; }
+ul a { text-decoration: none; }
+
+#play {
+  font-size: 40px;
+  text-decoration: none;
+  color: black;
+  text-shadow: white 0px 1px 1px;
+  margin-left:20px;
+}
+
+#rewind {
+   position: absolute; right: 5px;
+}
+
+p { margin:0; padding: 5px 10px; background: #ddd; }
+
+.more_options{ margin-top: 20px; }
+ 
+#map{ position: relative; width: 100%; height: 100px }
+.overlaid { position: absolute; bottom: 5px; text-align: center; width: 100%; }
+.content { padding: 40px 0px; }
+
 #timeline{ position: relative; }
 #actions{ margin-left: 35px; margin-right: 35px; }
 

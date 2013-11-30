@@ -94,6 +94,7 @@
 
 	var templates = {}, mapping = {}, calculated_fields = {}, latest = {};
 	var show_when = {}, on_click = {}, on_submit = {}, on_change = {}, on_update = {};
+	var live_fns = {};
 
 	function matches(element, selector){
 		if (!element || element.nodeType !== 1) return false;
@@ -105,11 +106,6 @@
 	function closest(node, sel){
 	    while (node && !(matches(node, sel))) node = node.parentNode;
 	    if (matches(node, sel)) return node;
-	}
-
-	function alleach(dom, selector, f){
-	  var matches = dom.getElementsByClassName(selector);
-	  for (var i = 0; i < matches.length; ++i) f(matches[i]);
 	}
 
 	function get_field_value(domid, json, path){
@@ -139,6 +135,8 @@
 		   var val = get_field_value(domid, json, path);
 		   if (attr == 'text'){
 			   el.innerHTML = val;
+		   } else if (attr == 'value') {
+            el.value = val;
 		   } else {
 			   el.setAttribute(attr, val);
    		}				
@@ -161,9 +159,6 @@
 	          decorate_element(el, json, domid);
 		}
 
-		for (var k in json){
-		  alleach(dom, k, function(m){ m.innerHTML = json[k]; });
-		}
 		return dom;
 	}
 
@@ -171,7 +166,7 @@
 		var doms = [];
 		for (var k in array){
 			var o = array[k];
-			o.id = k;
+			if (!o.id) o.id = k;
 			var clone = dom.cloneNode(true);
 			clone.data = o;
 			clone.path = path + '/' + o.id;
@@ -181,8 +176,30 @@
 		return doms;
 	}
 
+
 	function projectOnto(domid, value, path){
+		latest[domid] = value;
+		if (domid.match(/\.\.\.$/)){
+			var domid2 = domid.slice(0,-3);
+			var outer = document.querySelector(domid2);
+			if (!outer) return alert("Not found in DOM: " + domid2);
+			if (!templates[domid]){
+				// cache template
+				templates[domid] = outer.firstElementChild.cloneNode(true);
+			}
+			outer.innerHTML = "";
+			if (!value) return;
+			var dom_objs = projectAll(value, templates[domid], domid2, path);
+			dom_objs.forEach(function(dom){ outer.appendChild(dom); });
+		} else {
+			var el = document.querySelector(domid);
+			project(value, el, domid);
+		}
+		if (on_update[domid]) on_update[domid](value);
+		refresh();
 	}
+
+
 
 	function map_to_dom(fbref, domid, path){
 		if (!path) {
@@ -190,37 +207,23 @@
 			return;
 		}
 
-		var dyn = fbref.dynamic(path);
-		mapping[domid] = dyn;
-
-		if (path.match(/\[(\d*)\]$/)){
-			// it's a collection
-			var outer = document.querySelector(domid);
-			if (!outer) return alert("Not found in DOM: " + domid);
-			templates[domid] = outer.firstElementChild.cloneNode(true);
-			outer.innerHTML = "";
-			dyn.on('value', function(snap){
-				var val = snap.val();
-				latest[domid] = val;
-				outer.innerHTML = "";
-				if (!val) return;
-				var dom_objs = projectAll(val, templates[domid], domid, snap.ref().toString());
-				dom_objs.forEach(function(dom){
-					outer.appendChild(dom);
-				});
-				if (on_update[domid]) on_update[domid](val);
-				refresh();
-			});
-		} else {
-			// simple object
-			dyn.on('value', function(snap){
-				var o = snap.val();
-				latest[domid] = o;
-				project(o, document.querySelector(domid), domid);
-				if (on_update[domid]) on_update[domid](o);
-				refresh();
-			});
+		if (typeof path == 'function'){
+			live_fns[domid] = path;
+			return;
 		}
+
+		var dyn = fbref.dynamic(path);
+		mapping[simpleSelector(domid)] = dyn;
+
+		dyn.on('value', function(snap){
+			var o = snap.val();
+			projectOnto(domid, o, path);
+		});
+	}
+
+	function simpleSelector(sel){
+		if (sel.match(/\.\.\.$/)) return sel.slice(0,-3);
+		return sel;
 	}
 
 	function refresh(){
@@ -231,6 +234,13 @@
 				if (show_when[k](el)) el.style.display = '';
 				else el.style.display = 'none';
 			};
+		}
+		for (var k in live_fns){
+			var nodes = document.querySelectorAll(simpleSelector(k));
+			for (var i = 0; i < nodes.length; i++) {
+				var el = nodes[i];
+				live_fns[k](function(value){ projectOnto(k, value); });
+			}
 		}
 	}
 
@@ -299,4 +309,11 @@
 
 	window.Fireball.refresh = refresh;
 	window.Fireball.latest = function(domid){ return latest[domid]; };
+
+	var copy = {};
+	window.Fireball.changed = function(p){
+		if (copy[p] == window[p]) return false;
+		copy[p] = window[p];
+		return true;	
+	};
 })();

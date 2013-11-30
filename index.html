@@ -13,85 +13,91 @@
 
 
 
-<div id="choose_city">
-   Choose your city:
-   <div id="cities">
-      <a href="#" data-set="text:name"></a>
-   </div>
+<div class="page" id="choose_city">
+   <p>Choose your city:</p>
+   <ul id="cities">
+      <a href="#" ><li data-set="text:name"></li></a>
+   </ul>
    <button id="new_city">Add</button>
 </div>
 
-<div id="city">
-   <a id="toggle_browse" href="#"><b id="count_string"></b> in <b data-set="text:name">NYC</b></a>
-   <div id="choose_experience">
-      <ul id="experiences">
-         <li><a href="#" data-set="text:calctitle"></a></li>
-      </ul>
-      <button id="new_experience">New experience</button>
-      <button id="change_city">Change city</button>
-   </div>
 
 
-
-
-   <form id="compose_experience">
-	A
-	<select name="quality">
-	<option>artful</option>
-	<option>athletic</option>
-	<option>challenging</option>
-	<option>disco</option>
-	<option>oddball</option>
-	<option>quiet</option>
-	<option>sweet</option>
-	<option>simple</option>
-	</select>
-	experience for
-      <input name="to_name" placeholder="Dedicated to">
-	starting
-      <input name="placename" placeholder="Start location">.<br>
-	by
-      <input name="author_name" placeholder="Your name">.<br>
-   
-      <select id="choose_song">
-         <option>Choose song...</option>
-         <optgroup id="songs">
-            <option data-set="text:#songs:song_title value:#songs:id"></option>
-         </optgroup>
-         <option>Add...</option>
-      </select><br>
-
-      <a href="#" id="cancel_compose">cancel</a>
-      <button type="submit">Get Started</button>      
-   </form>
+<div class="page" id="city">
+   <header>
+      <a href="#" id="change_city">Change city</a>
+      <h1><b id="count_string"></b> in <b data-set="text:name">NYC</b></h1>
+   </header>
+   <ul id="experiences">
+      <li><a href="#" data-set="text:calctitle"></a></li>
+   </ul>
+   <button id="new_experience">New experience</button>
 </div>
 
 
-   
-<style>
-#map{ position: relative; }
-#overlaid { position: absolute; bottom: 5px; text-align: center; }
-</style>
+   <header class="notsaved" id="edit_header">
+      <h1>Editing</h1>
+      <a href="#" class="hassong" id="save">save</a>
+   </header>
+   <header class="saved" id="play_header">
+      <a href="#" id="browse">other experiences</a>
+   </header>
 
+
+
+
+<div class="content">
+   
 <div id="experience" style="position:relative">
-   <div id="about">
-      Instructions for enjoying <b data-set="text:song_title"></b>,
-      starting at <b data-set="text:placename"></b>      
-      <button id="edit">edit</button>
-      <a href="#" id="delete">delete</a>
-   </div>
-   <div class="map">
-      <a id="geolocate" data-set="text:googlemap">(map here)</a>
-      <div class="overlaid">
-         <a style="float:right" id="rewind" href="#">&#9650;</a>
-         <a id="play" href="#">&#9654;</a>
-      </div>
-   </div>
-   <img id="waveform" data-set="src:waveform_url">
+
+
+<div class="well" id="about">
+	<form class="notsaved" id="compose_experience">
+		Something
+		<select id="quality" data-set="value:quality" name="quality">
+			<option>artful</option>
+			<option>athletic</option>
+			<option>challenging</option>
+			<option>disco</option>
+			<option>oddball</option>
+			<option>quiet</option>
+			<option>sweet</option>
+			<option>simple</option>
+		</select>
+      starting
+		<input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
+	      <a href="#" id="delete">delete</a>
+	</form>
+
+	<div class="saved" id="play_experience">
+         Something <b data-set="text:quality"></b>
+	      starting <b data-set="text:placename"></b>      
+	      <button id="edit">edit</button>
+	</div>
 </div>
 
+	<div id="map">
+		<a id="geolocate" data-set="text:googlemap">(map here)</a>
+		<div class="overlaid hassong">
+			 <a style="float:right" id="rewind" href="#">&#9650;</a>
+			 <a id="play" href="#">&#9654;</a>
+		</div>
+	</div>
+	<img class="hassong" id="waveform" data-set="src:waveform_url">
+</div>
 
-<div id="timeline">
+<div id="pick_song" class="nosong">
+	<form id="search"><input name="q" placeholder="search for a song" /></form>
+	<ul id="results">
+		<a href="#"><li >
+			<span class="indicator">PLAY</span>
+			<span data-set="text:title">Song title</span>
+			<button class="choose_song">Choose</button>
+		</li></a>
+	</ul>
+</div>
+
+<div id="timeline" class="hassong">
    <div id="playhead"></div>
    <div id="actions">
       <a data-set="style:style" style="top: 159px" class="action">
@@ -101,9 +107,8 @@
    </div>
 </div>
 
-<button id="save">save</button>
 
-<div id="comment_section">
+<div class="saved" id="comment_section">
    <button id="share">Share</button>
    <h2>Comments</h2>
    <ul id="comments">
@@ -112,7 +117,9 @@
    <button id="add_comment">Add a comment</button>
 </div>
 
-<div id="add_action">
+</div>
+
+<div class="notsaved" id="add_action">
    Add:
       <button>Dance move</button>
       <button>Fitness activity</button>
@@ -156,256 +163,4 @@
 
 
 
-<script>
-var page = "home";
-var F = new Firebase("http://songwalks.firebaseio.com/");
-var current_sound, show_browse, show_compose, 
-	next_flip_time, sorted_actions;
-function $(x){ return document.getElementById(x); }
-
-Fireball(F, {
-   map:{
-      '#cities'      : '/cities[]',
-      '#city'        : '/cities/$city',
-      '#experiences' : '/experiences_in_city/$city[]',
-      '#experience'  : '/experiences_in_city/$city/$experience',
-      '#actions'     : '/p2/actions/$experience[]',
-      '#comments'    : '/comments/$experience[]',
-      '#songs'       : '/songs[]'
-   },
-
-   on_update:{
-	'#actions': function(v){
-		var actions = [];
-		for (var k in v){ actions.push(v[k]); }
-		sorted_actions = actions.sort(function(a,b){
-			return a.t - b.t;
-		});
-		next_flip_time = null;
-	},
-
-	'#experience': function(v){
-		if (v && !v.saved) $('timeline').className = 'editing';
-		else $('timeline').className = 'playing';
-		      
-		if (v.duration){
-			$('timeline').style.height = (v.duration * 8) + "px";
-			$('waveform').style.webkitTransform = "rotate(90deg) scale("+(v.duration * 8 / 1800)+",1.15)";
-		}
-		      
-		SC.stream(v.soundcloud_url, function(sound){
-		    current_sound = sound;
-		    sound.load({
-		       onplay:function(){
-			  $('play').innerHTML = "PAUSE";
-		       },
-		       onpaused:function(){
-			  $('play').innerHTML = "PLAY";
-		       },
-		       whileplaying: function(){
-			  var s = sound.position / 1000;
-			  $('playhead').style.top = (s*8) + "px";
-
-			  if (!next_flip_time || s >= next_flip_time){
-				// go thru all actions
-				// unflip all
-				// flip those that should be flip
-				// if there's one that's greater than the last
-				// store 5s before it in next flip time
-				// make the beep if it's next flip time
-			  }
-
-			  var actions = Fireball.latest('#actions');
-			  for (var k in actions){
-			     if (Math.abs(actions[k].t - s) > 5) $(k).style.backgroundColor = "black";
-			     else $(k).style.backgroundColor = "white";
-			  }
-		       }
-		    });
-		 });
-	},
-
-	'#experiences': function(v){
-		 if (!v) {
-			$("count_string").innerHTML = "No experiences yet"
-		 } else {
-			 $("count_string").innerHTML = Object.keys(v).length + " experiences";
-		 }
-	}
-   },
-   
-   init:function(){
-      SC.initialize({client_id: "43963acff2ef28ec55f039eddcea8478"});
-      var m = location.href.match(/experience\/(.*)$/);
-      if (m) Fireball.set('$experience', m[1]);
-   },
-   
-   on_change:{
-      '#choose_song': function(el){
-         var opt = el.options[el.selectedIndex];
-         if (el.value.match(/^Add/)){
-            setTimeout(function(){
-               var url = prompt("Soundcloud URL:");
-               if (!url) return el.selectedIndex = 0;
-               SC.get('/resolve', {url:url}, function(track){
-               // alert('got:' + JSON.stringify(track));
-                  if (!track) return alert('Sorry, couldn\'t load');
-                  var properties = {
-                     soundcloud_url: "/tracks/" + track.id,
-                     soundcloud_id: track.id,
-                     waveform_url: track.waveform_url,
-                     song_title: track.title,
-                     duration: track.duration / 1000
-                  };
-                  Fireball('#songs').push(properties);
-               });
-            }, 0);
-         } 
-      }
-   },
-   
-
-   calculated_fields:{
-      "#experience googlemap": function(exp){
-         if (!exp.start_loc) return "<a href='#' id='geolocate'>Geolocate!</a>";
-         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=";
-         mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
-         mapUrl = mapUrl + '&zoom=16&size=320x100&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
-         return "<img src='"+mapUrl+"'>";
-      },
-      
-      "#experiences calctitle": function(exp){
-         // TODO: make from start loc name and song name and authors
-
-	if (exp.quality){
-		var msg = "A " + exp.quality + " experience of &ldquo;" + exp.song_title + "&rdquo;.  ";
-		if (exp.to_name) msg += "With <b>" + exp.to_name + "</b> in mind.  ";
-		if (exp.author_name) msg += "By <b>" + (exp.author_name) + "</b>.  ";
-		if (exp.placename) msg+= "Starting at &ldquo;" + exp.placename + "&rdquo;";
-		return msg;
-	}
-
-         if (exp.to_name){
-	         return "With <b>" + exp.to_name + "</b> in mind, <b>" + (exp.author_name || "Someone") + "</b>, came up with a way of enjoying &ldquo;" + exp.song_title + "&rdquo; starting at &ldquo;" + exp.placename + "&rdquo;";
-         } else {
-	         return "<b>" + (exp.author_name || "Someone") + "</b> has a way of enjoying &ldquo;" + exp.song_title + "&rdquo; starting at &ldquo;" + exp.placename + "&rdquo;";
-         }
-      },
-      
-
-      '#actions style': function(action){
-         return "top: " + (action.t * 8 + 35) + "px";
-      }
-   },
-   
-   show_when:{
-      '#experience': function(){ return Fireball.latest('#experience') },
-      '#timeline':   function(){ return Fireball.latest('#experience') },
-
-      '#add_action, #save, #delete': function(){
-         var latest = Fireball.latest('#experience');
-         return latest && !latest.saved; 
-      },
-      '#edit, #comment_section': function(){
-         return Fireball.latest('#experience') && Fireball.latest('#experience').saved; 
-      },
-      "#choose_city": function(){ return !Fireball.get("$city"); },
-      "#city": function(){ return Fireball.get("$city"); },
-      "#choose_experience": function(){ return show_browse; },
-      "#compose_experience": function(){ return show_compose; }
-   },
-
-   on_click: {
-      "#share": function(){
-         var url = "http://experiencefarm.org/#!experience/" + Fireball.get('$experience');
-         url = urlencode(url);
-         window.location = "mailto:?subject=I+made+you+a+thing&body="+url;
-      },
-      "#add_comment": function(){
-         var comment = prompt('comment:');
-         if (!comment) return;
-         Fireball('#comments').push({ text: comment });
-      },
-      "#experiences li": function(el){
-            Fireball.set('$experience', el.id);
-            current_sound = null;
-            show_browse = false;
-      },
-
-      "#new_experience": function(){
-         show_browse = false;
-         show_compose = true;
-      },
-      "#cancel_compose": function(){
-         show_browse = true;
-         show_compose = false;
-      },
-      "#toggle_browse": function(){ show_browse = !show_browse; },
-      "#change_city": function(){ Fireball.set('$city', null); },
-      "#cities a": function(el){ Fireball.set('$city', el.id); },
-      
-      
-      '.action': function(el){
-	      alert('you clicked ' + el.id);
-      },
-	
-      '#add_action button': function(el){
-         var new_action = prompt('What:');
-         if (new_action) Fireball('#actions').push({
-            t: current_sound.position / 1000,
-            type: el.innerText,
-            text: new_action
-         });
-      },
-          
-      '#new_city': function(){
-	      var name = prompt('City:');
-	      if (name) Fireball('#cities').push({name:name});
-      },
-		   
-      '#geolocate':function(){
-   	      navigator.geolocation.getCurrentPosition(function(pos){
-   	         Fireball('#experience').update({ 'start_loc': [
-   	            pos.coords.latitude, pos.coords.longitude
-   	         ] });
-   	      });
-	   },
-	   
-      "#rewind": function(){
-         current_sound.setPosition(0);
-      },
-      "#delete":function(){
-         Fireball('#experience').remove();
-         Fireball.set("$experience", null);
-      },
-      "#save":function(){
-         Fireball('#experience').update({ saved: true });
-      },
-      "#edit":function(){
-         Fireball('#experience').update({ saved: false });
-      },
-      "#play": function(){
-         if (current_sound) return current_sound.togglePause();
-      }
-	},
-	
-	on_submit:{
-      '#compose_experience': function(form){
-         var songsel = form.choose_song;
-         var opt = songsel.options[songsel.selectedIndex];
-         properties = opt.data;
-         properties.song_id = opt.id;
-         properties.author_name = form.author_name.value;
-         properties.quality = form.quality.value;
-         properties.to_name = form.to_name.value;
-         properties.placename = form.placename.value;
-         var id = Fireball('#experiences').push(properties).name();
-         Fireball.set('$experience', id);
-         show_compose = false;
-         current_sound = null;
-      }
-	}
-});
-
-</script>
-
+<script src="main.js"></script>
