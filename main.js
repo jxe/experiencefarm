@@ -4,6 +4,38 @@ var current_sound, show_browse, page, show_compose,
 	next_flip_time, sorted_actions;
 function $(x){ return document.getElementById(x); }
 
+var Player = {
+
+   current: {},
+
+   clear: function(){
+      if (Player.current.sound){
+         Player.current.sound.stop();
+         Player.current.sound.unload();
+      }
+      if (Player.current.indicator) {
+         Player.current.indicator.innerHTML = "&#9654;";
+      }
+      Player.current = {};
+   },
+
+   stream: function(method, track, indicator, options){
+      if (Player.current.track) Player.clear();
+      Player.current.track = track;
+      Player.current.indicator = indicator;
+      SC.stream(track, function(sound){
+          Player.current.sound = sound;
+          indicator.innerHTML = "&#9654;";
+          options.onplay=function(){ indicator.innerHTML = "&#10074;&#10074"; };
+          options.onpause=function(){ indicator.innerHTML = "&#9654;"; };
+          options.onresume=function(){ indicator.innerHTML = "i&#10074;&#10074;"; };
+          sound[method](options || {});
+      });
+   }
+
+};
+
+
 Fireball(F, {
    map:{
       '#city'        : '/cities/$city',
@@ -40,21 +72,16 @@ Fireball(F, {
                
          if (v.duration){
             $('timeline').style.height = (v.duration * 8) + "px";
-            $('waveform').style.webkitTransform = "rotate(90deg) scale("+(v.duration * 8 / 1800)+",1.15)";
+            $('waveform').style.webkitTransform = 
+               "rotate(90deg) scale("+(v.duration * 8 / 1800)+",1.15)";
          }
                
          if (!v.soundcloud_url) return Fireball.refresh();
 
          $('play').innerHTML = "&#8230;";
-         SC.stream(v.soundcloud_url, function(sound){
-             current_sound = sound;
-             $('play').innerHTML = "&#9654;";
-             sound.load({
-                onplay:function(){ $('play').innerHTML = "&#10074;&#10074"; },
-                onresume:function(){ $('play').innerHTML = "i&#10074;&#10074;"; },
-                onpause:function(){ $('play').innerHTML = "&#9654;"; },
-                whileplaying: function(){
-                 var s = sound.position / 1000;
+         Player.stream('load', v.soundcloud_url, $('play'), {
+            whileplaying: function(){
+                 var s = Player.current.sound.position / 1000;
                  $('playhead').style.top = (s*8) + "px";
 
                  if (!next_flip_time || s >= next_flip_time){
@@ -71,10 +98,8 @@ Fireball(F, {
                     if (Math.abs(actions[k].t - s) > 5) $(k).style.backgroundColor = "black";
                     else $(k).style.backgroundColor = "white";
                  }
-                }
-		    });
-          Fireball.refresh();
-		 });
+            }
+        });
 	},
 
 	'#experiences': function(v){
@@ -105,28 +130,7 @@ Fireball(F, {
       },
       //   properties.author_name = form.author_name.value;
       //   properties.to_name = form.to_name.value;
-      '#search input': function(q){ searchq = q.value; },
-      '#choose_song': function(el){
-         var opt = el.options[el.selectedIndex];
-         if (el.value.match(/^Add/)){
-            setTimeout(function(){
-               var url = prompt("Soundcloud URL:");
-               if (!url) return el.selectedIndex = 0;
-               SC.get('/resolve', {url:url}, function(track){
-               // alert('got:' + JSON.stringify(track));
-                  if (!track) return alert('Sorry, couldn\'t load');
-                  var properties = {
-                     soundcloud_url: "/tracks/" + track.id,
-                     soundcloud_id: track.id,
-                     waveform_url: track.waveform_url,
-                     song_title: track.title,
-                     duration: track.duration / 1000
-                  };
-                  Fireball('#songs').push(properties);
-               });
-            }, 0);
-         } 
-      }
+      '#search input': function(q){ searchq = q.value; }
    },
    
 
@@ -200,14 +204,14 @@ Fireball(F, {
 
 	"#results a": function(a){
 		var data = a.data;
-		SC.stream('/tracks/' + data.id, function(sound){ sound.play(); });
+      Player.stream('play', '/tracks/' + data.id);
 	},
 
 
       "#share": function(){
          var url = "http://experiencefarm.org/#!experience/" + Fireball.get('$experience');
-         url = urlencode(url);
-         window.location = "mailto:?subject=I+made+you+a+thing&body="+url;
+         url = encodeURIComponent(url);
+         window.location = "mailto:?subject=I%20made%20you%20a%20thing&body="+url;
       },
       "#add_comment": function(){
          var comment = prompt('comment:');
@@ -216,29 +220,32 @@ Fireball(F, {
       },
       "#experiences li": function(el){
             Fireball.set('$experience', el.id);
-            current_sound = null;
-          page = 'play';
       },
 
       "#new_experience": function(){
-         var id = Fireball('#experiences').push({}).name();
-         Fireball.set('$experience', id);
-         current_sound = null;
-          page = 'play';
+         navigator.geolocation.getCurrentPosition(function(pos){
+            var id = Fireball('#experiences').push({ 'start_loc': [
+               pos.coords.latitude, pos.coords.longitude
+            ]}).name();
+            Player.clear();
+            Fireball.set('$experience', id);
+         });
       },
       "#browse": function(){ Fireball.set('$experience', null);  },
       "#change_city": function(){ Fireball.set('$city', null); },
       "#cities a": function(el){ Fireball.set('$city', el.id); },
       
-      
       '.action': function(el){
-	      alert('you clicked ' + el.id);
+         var latest = Fireball.latest('#experience');
+         if (latest && latest.saved) return;
+         var sure = confirm("Do you want to delete this instruction?");
+	      if (sure) Fireball('#actions').child(el.id).remove();
       },
 	
       '#add_action button': function(el){
          var new_action = prompt('What:');
          if (new_action) Fireball('#actions').push({
-            t: current_sound.position / 1000,
+            t: Player.current.sound.position / 1000,
             type: el.innerText,
             text: new_action
          });
@@ -250,15 +257,17 @@ Fireball(F, {
       },
 		   
       '#geolocate':function(){
-   	      navigator.geolocation.getCurrentPosition(function(pos){
-   	         Fireball('#experience').update({ 'start_loc': [
-   	            pos.coords.latitude, pos.coords.longitude
-   	         ] });
-   	      });
+         var latest = Fireball.latest('#experience');
+         if (latest && latest.saved) return;
+         navigator.geolocation.getCurrentPosition(function(pos){
+            Fireball('#experience').update({ 'start_loc': [
+               pos.coords.latitude, pos.coords.longitude
+            ]});
+         });
 	   },
 	   
       "#rewind": function(){
-         current_sound.setPosition(0);
+         Player.current.sound.setPosition(0);
       },
       "#delete":function(){
          Fireball('#experience').remove();
@@ -271,7 +280,7 @@ Fireball(F, {
          Fireball('#experience').update({ saved: false });
       },
       "#play": function(){
-         if (current_sound) return current_sound.togglePause();
+         if (Player.current.sound) return Player.current.sound.togglePause();
          else return alert('No current sound');
       }
 	}

@@ -1,5 +1,6 @@
 (function(){
 
+   new Tap(document);
 
 	// some rad extensions to firebase itself
 
@@ -246,7 +247,7 @@
 
 	document.addEventListener('DOMContentLoaded', function(){
 		refresh();
-		document.addEventListener('click', function(ev){
+		document.addEventListener('tap', function(ev){
 			for (var k in on_click){
 				var el = closest(ev.target, k);
 				if (el){

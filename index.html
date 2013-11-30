@@ -3,6 +3,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <link rel="apple-touch-icon-precomposed" href="efarm.jpg" />
 <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
+<script src="tap.js"></script>
 <script src="fireball.js"></script>
 <script src="http://connect.soundcloud.com/sdk.js"></script>
 <!--<script src="//cdn.jsdelivr.net/soundmanager2/2.97a.20130512/soundmanager2-nodebug-jsmin.js"></script>-->
@@ -40,97 +41,95 @@
 </div>
 
 
-<header class="notsaved" id="edit_header">
-   <h1>Editing</h1>
-   <a href="#" class="hassong" id="save">save</a>
-</header>
-<header class="saved" id="play_header">
-   <a href="#" id="browse">other experiences</a>
-</header>
+<div id="experience" >
 
-<div class="content">
-   
-<div id="experience" style="position:relative">
+   <header class="notsaved" id="edit_header">
+      <h1>Editing</h1>
+      <a href="#" class="hassong" id="save">save</a>
+   </header>
+   <header class="saved" id="play_header">
+      <a href="#" id="browse">other experiences</a>
+   </header>
+
+   <div class="content">
+      <div class="well" id="about">
+         <form class="notsaved" id="compose_experience">
+            Something
+            <select id="quality" data-set="value:quality" name="quality">
+               <option>artful</option>
+               <option>athletic</option>
+               <option>challenging</option>
+               <option>disco</option>
+               <option>oddball</option>
+               <option>quiet</option>
+               <option>sweet</option>
+               <option>simple</option>
+            </select>
+            starting
+            <input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
+            <a href="#" id="delete">delete</a>
+         </form>
+
+         <div class="saved" id="play_experience">
+            Something <b data-set="text:quality"></b>
+            starting <b data-set="text:placename"></b>      
+            <button id="edit">edit</button>
+         </div>
+      </div>
+
+      <div id="map">
+         <a id="geolocate" data-set="text:googlemap">(map here)</a>
+         <div class="overlaid hassong">
+            <a style="float:right" id="rewind" href="#">&#9650;</a>
+            <a id="play" href="#">&#9654;</a>
+         </div>
+      </div>
+
+      <div id="pick_song" class="nosong">
+         <form id="search"><input name="q" placeholder="search for a song" /></form>
+         <ul id="results">
+            <a href="#"><li >
+               <span class="indicator">PLAY</span>
+               <span data-set="text:title">Song title</span>
+               <button class="choose_song">Choose</button>
+            </li></a>
+         </ul>
+      </div>
+
+      <div id="timeline" class="hassong">
+         <img id="waveform" data-set="src:waveform_url">
+         <div id="playhead"></div>
+         <div id="actions">
+            <a data-set="style:#actions:style" style="top: 159px" class="action">
+               <i data-set="text:#actions:type"></i>
+               <span data-set="text:#actions:text">Blow bubbles</span>
+            </a>
+         </div>
+      </div>
 
 
-<div class="well" id="about">
-	<form class="notsaved" id="compose_experience">
-		Something
-		<select id="quality" data-set="value:quality" name="quality">
-			<option>artful</option>
-			<option>athletic</option>
-			<option>challenging</option>
-			<option>disco</option>
-			<option>oddball</option>
-			<option>quiet</option>
-			<option>sweet</option>
-			<option>simple</option>
-		</select>
-      starting
-		<input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
-	      <a href="#" id="delete">delete</a>
-	</form>
+      <div class="saved" id="comment_section">
+         <button id="share">Share</button>
+         <h2>Comments</h2>
+         <ul id="comments">
+            <li data-set="text:#comments:text"></li>
+         </ul>
+         <button id="add_comment">Add a comment</button>
+      </div>
 
-	<div class="saved" id="play_experience">
-         Something <b data-set="text:quality"></b>
-	      starting <b data-set="text:placename"></b>      
-	      <button id="edit">edit</button>
-	</div>
-</div>
-
-	<div id="map">
-		<a id="geolocate" data-set="text:googlemap">(map here)</a>
-		<div class="overlaid hassong">
-			 <a style="float:right" id="rewind" href="#">&#9650;</a>
-			 <a id="play" href="#">&#9654;</a>
-		</div>
-	</div>
-	<img class="hassong" id="waveform" data-set="src:waveform_url">
-</div>
-
-<div id="pick_song" class="nosong">
-	<form id="search"><input name="q" placeholder="search for a song" /></form>
-	<ul id="results">
-		<a href="#"><li >
-			<span class="indicator">PLAY</span>
-			<span data-set="text:title">Song title</span>
-			<button class="choose_song">Choose</button>
-		</li></a>
-	</ul>
-</div>
-
-<div id="timeline" class="hassong">
-   <div id="playhead"></div>
-   <div id="actions">
-      <a data-set="style:style" style="top: 159px" class="action">
-      	<i data-set="text:type"></i>
-      	<span data-set="text">Blow bubbles</span>
-      </a>
    </div>
-</div>
 
-
-<div class="saved" id="comment_section">
-   <button id="share">Share</button>
-   <h2>Comments</h2>
-   <ul id="comments">
-      <li data-set="text"></li>
-   </ul>
-   <button id="add_comment">Add a comment</button>
-</div>
-
-</div>
-
-<div class="notsaved" id="add_action">
-   Add:
+   <div class="notsaved" id="add_action">
+      Add:
       <button>Dance move</button>
       <button>Fitness activity</button>
       <button>Thought/feeling</button>
       <button>Interaction with person</button>
       <button>Interaction with object</button>
       <button>Make a sound</button>
+   </div>
+
 </div>
-      
 
 
 
