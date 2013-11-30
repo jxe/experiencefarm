@@ -54,7 +54,7 @@
    <div class="content">
       <div class="well" id="about">
          <form class="notsaved" id="compose_experience">
-            Something
+            #
             <select id="quality" data-set="value:quality" name="quality">
                <option>artful</option>
                <option>athletic</option>
@@ -64,15 +64,17 @@
                <option>quiet</option>
                <option>sweet</option>
                <option>simple</option>
-            </select>
-            starting
+            </select>,
+            to <b data-set="text:song_title"></b>,
+            starts
             <input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
             <a href="#" id="delete">delete</a>
          </form>
 
          <div class="saved" id="play_experience">
-            Something <b data-set="text:quality"></b>
-            starting <b data-set="text:placename"></b>      
+            #<b data-set="text:quality"></b>,
+            to <b data-set="text:song_title"></b>,
+            starts <b data-set="text:placename"></b>      
             <button id="edit">edit</button>
          </div>
       </div>
