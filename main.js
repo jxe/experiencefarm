@@ -27,10 +27,12 @@ var Player = {
       Player.current.indicator = indicator;
       SC.stream(track, function(sound){
           Player.current.sound = sound;
-          indicator.innerHTML = "&#9654;";
-          options.onplay=function(){ indicator.innerHTML = "&#10074;&#10074"; };
-          options.onpause=function(){ indicator.innerHTML = "&#9654;"; };
-          options.onresume=function(){ indicator.innerHTML = "i&#10074;&#10074;"; };
+          if (indicator){
+             indicator.innerHTML = "&#9654;";
+             options.onplay=function(){ indicator.innerHTML = "&#10074;&#10074"; };
+             options.onpause=function(){ indicator.innerHTML = "&#9654;"; };
+             options.onresume=function(){ indicator.innerHTML = "i&#10074;&#10074;"; };
+          }
           sound[method](options || {});
       });
    }
@@ -57,18 +59,16 @@ Fireball(F, {
    },
 
    on_update:{
-      '#actions': function(v){
+      '#actions...': function(v){
          var actions = [];
-         for (var k in v){ actions.push(v[k]); }
-         sorted_actions = actions.sort(function(a,b){
-            return a.t - b.t;
-         });
+         for (var k in v){ v[k].id = k; actions.push(v[k]); }
+         sorted_actions = actions.sort(function(a,b){ return a.t - b.t; });
          next_flip_time = null;
       },
 
       '#experience': function(v){
-         //if (!v || !v.saved) $('timeline').className = 'editing';
-         //else $('timeline').className = 'playing';
+         if (!v || !v.saved) $('experience').className = 'editing';
+         else $('experience').className = 'playing';
 
          if (!v) return Fireball.refresh();
                
@@ -86,20 +86,34 @@ Fireball(F, {
                  var s = Player.current.sound.position / 1000;
                  $('playhead').style.top = (s*8) + "px";
 
-                 if (!next_flip_time || s >= next_flip_time){
-                  // go thru all actions
-                  // unflip all
-                  // flip those that should be flip
-                  // if there's one that's greater than the last
-                  // store 5s before it in next flip time
-                  // make the beep if it's next flip time
+                 if (sorted_actions && (!next_flip_time || s >= next_flip_time)){
+                    if (next_flip_time) beep();
+                    var last_flipped;
+                    for (var i = 0; i < sorted_actions.length; i++) {
+                       var a = sorted_actions[i];
+                       if (Math.abs(a.t - s) < 5) {
+                          $(a.id).className = "show";
+                          last_flipped = i;
+                       } else {
+                          $(a.id).className = "hide";
+                       }
+                    }
+                    var next;
+                    if (last_flipped !== undefined) {
+                       next = sorted_actions[last_flipped+1];
+                       if (next === undefined){
+                          next_flip_time = s+10000;
+                       } else {
+                          next_flip_time = next.t - 5;
+                       }
+                    }
                  }
 
-                 var actions = Fireball.latest('#actions');
-                 for (var k in actions){
-                    if (Math.abs(actions[k].t - s) > 5) $(k).style.backgroundColor = "black";
-                    else $(k).style.backgroundColor = "white";
-                 }
+                 //var actions = Fireball.latest('#actions');
+                 //for (var k in actions){
+                 //   if (Math.abs(actions[k].t - s) > 5) $(k).style.backgroundColor = "black";
+                 //   else $(k).style.backgroundColor = "white";
+                 //}
             }
         });
 	},
@@ -222,7 +236,8 @@ Fireball(F, {
          Fireball('#comments').push({ text: comment });
       },
       "#experiences li": function(el){
-            Fireball.set('$experience', el.id);
+         beep();
+         Fireball.set('$experience', el.id);
       },
 
       "#new_experience": function(){
@@ -238,7 +253,7 @@ Fireball(F, {
       "#change_city": function(){ Fireball.set('$city', null); },
       "#cities a": function(el){ Fireball.set('$city', el.id); },
       
-      '.action': function(el){
+      '#actions>a': function(el){
          var latest = Fireball.latest('#experience');
          if (latest && latest.saved) return;
          var sure = confirm("Do you want to delete this instruction?");
@@ -289,4 +304,23 @@ Fireball(F, {
 	}
 	
 });
+
+var beep = (function () {
+   var ctx = new(window.audioContext || window.webkitAudioContext);
+   return function (duration, type, finishedCallback) {
+      if (!duration) duration = 100;
+      if (!type) type = 0;
+      duration = +duration;
+      type = (type % 5) || 0;  // Only 0-4 are valid types.
+      if (typeof finishedCallback != "function") {
+         finishedCallback = function () {};
+      }
+      var osc = ctx.createOscillator();
+      osc.type = type;
+      osc.frequency.value = 880*2.0;
+      osc.connect(ctx.destination);
+      osc.noteOn(0);
+      setTimeout(function () { osc.noteOff(0); finishedCallback(); }, duration);
+   };
+})();
 

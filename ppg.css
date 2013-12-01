@@ -49,6 +49,10 @@ header a:first-child { position: absolute; left: 5px; right: auto; }
   text-shadow: white 0px 1px 1px;
   margin-right:10px;
   float:right;
+  font: sans-serif 30px;
+  min-width: 30px;
+  min-height: 30px;
+  display: inline-block;
 }
 
 #rewind {
@@ -76,18 +80,20 @@ p { margin:0; padding: 5px 10px; background: #ddd; }
    -webkit-transform: rotate(90deg) scale(1.0,1.15); position: absolute; display:block; -webkit-transform-origin: 0% 100%; top: -275px;
 }
 
-.action{ 
+#actions >a{ 
    position: absolute; border-left: solid 2px #558; 
    padding: 2px 7px; display:block; min-width: 230px;
    z-index: 2;
    background: #eee;
+      transition: 0.6s;
+         transform-style: preserve-3d;
+         backface-visibility: hidden;
 }
 
-.playing .action {
-   background: black;
-}
+.playing #actions>a{ background: black; transform: rotateY(180deg); }
+.playing #actions>a.show { background: white; transform: rotateY(0deg); }
 
-.action i {
+#actions>a i {
    font-size:9px;
    color: #aaa;
    display:block;
