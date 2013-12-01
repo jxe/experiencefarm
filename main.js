@@ -4,6 +4,8 @@ var current_sound, show_browse, page, show_compose,
 	next_flip_time, sorted_actions;
 function $(x){ return document.getElementById(x); }
 
+if (navigator.standalone) document.getElementsByTagName('body')[0].className = 'standalone';
+
 var Player = {
 
    current: {},
