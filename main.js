@@ -147,10 +147,11 @@ Fireball(F, {
          // TODO: make from start loc name and song name and authors
 
 	if (exp.quality){
-		var msg = "A " + exp.quality + " experience of &ldquo;" + exp.song_title + "&rdquo;.  ";
-		if (exp.to_name) msg += "With <b>" + exp.to_name + "</b> in mind.  ";
-		if (exp.author_name) msg += "By <b>" + (exp.author_name) + "</b>.  ";
-		if (exp.placename) msg+= "Starting at &ldquo;" + exp.placename + "&rdquo;";
+		var msg = "An <b>#" + exp.quality + "</b> experience, set to <b>&ldquo;" + exp.song_title + "&rdquo;</b>. ";
+		if (exp.to_name) msg += "with <b>" + exp.to_name + "</b> in mind.  ";
+		if (exp.placename) msg+= "<br>starts <b>" + exp.placename + "</b>";
+		if (exp.author_name) msg += ", by <b>" + (exp.author_name) + "</b>.  ";
+      else msg += ".";
 		return msg;
 	}
 
@@ -163,7 +164,7 @@ Fireball(F, {
       
 
       '#actions style': function(action){
-         return "top: " + (action.t * 8 + 35) + "px";
+         return "top: " + (action.t * 8 + 5) + "px";
       }
    },
    
@@ -265,19 +266,19 @@ Fireball(F, {
             ]});
          });
 	   },
-	   
-      "#rewind": function(){
-         Player.current.sound.setPosition(0);
-      },
-      "#delete":function(){
-         Fireball('#experience').remove();
-         Fireball.set("$experience", null);
+      "#edit":function(){
+         Fireball('#experience').update({ saved: false });
       },
       "#save":function(){
          Fireball('#experience').update({ saved: true });
       },
-      "#edit":function(){
-         Fireball('#experience').update({ saved: false });
+	   
+      "#delete":function(){
+         Fireball('#experience').remove();
+         Fireball.set("$experience", null);
+      },
+      ".rewind": function(){
+         if (Player.current.sound) Player.current.sound.setPosition(0);
       },
       "#play": function(){
          if (Player.current.sound) return Player.current.sound.togglePause();

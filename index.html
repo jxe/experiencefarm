@@ -43,16 +43,23 @@
 
 <div id="experience" >
 
-   <header class="notsaved" id="edit_header">
+   <header class="notsaved rewind" id="edit_header">
+      <a href="#" id="delete">delete</a>
       <h1>Editing</h1>
       <a href="#" class="hassong" id="save">save</a>
    </header>
-   <header class="saved" id="play_header">
+   <header class="saved rewind" id="play_header">
       <a href="#" id="browse">other experiences</a>
+      <a href="#" id="edit">edit</a>
    </header>
 
    <div class="content">
+      <div id="map">
+         <a id="geolocate" data-set="text:googlemap">(map here)</a>
+      </div>
+
       <div class="well" id="about">
+         <a class="hassong" id="play" href="#">&#9654;</a>
          <form class="notsaved" id="compose_experience">
             #
             <select id="quality" data-set="value:quality" name="quality">
@@ -65,26 +72,17 @@
                <option>sweet</option>
                <option>simple</option>
             </select>,
-            to <b data-set="text:song_title"></b>,
+            set to <b data-set="text:song_title"></b>,
             starts
             <input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
-            <a href="#" id="delete">delete</a>
          </form>
 
          <div class="saved" id="play_experience">
-            #<b data-set="text:quality"></b>,
-            to <b data-set="text:song_title"></b>,
+            An #<b data-set="text:quality"></b> experience,
+            set to <b data-set="text:song_title"></b>,
             starts <b data-set="text:placename"></b>      
-            <button id="edit">edit</button>
          </div>
-      </div>
-
-      <div id="map">
-         <a id="geolocate" data-set="text:googlemap">(map here)</a>
-         <div class="overlaid hassong">
-            <a style="float:right" id="rewind" href="#">&#9650;</a>
-            <a id="play" href="#">&#9654;</a>
-         </div>
+            <!--<a style="float:right" id="rewind" href="#">&#9650;</a>-->
       </div>
 
       <div id="pick_song" class="nosong">
@@ -122,12 +120,12 @@
    </div>
 
    <div class="notsaved" id="add_action">
-      Add:
+      <h3>Add</h3>
       <button>Dance move</button>
       <button>Fitness activity</button>
       <button>Thought/feeling</button>
-      <button>Interaction with person</button>
-      <button>Interaction with object</button>
+      <button>Interact w person</button>
+      <button>Interact w object</button>
       <button>Make a sound</button>
    </div>
 
