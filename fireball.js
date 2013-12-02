@@ -251,8 +251,10 @@
 			for (var k in on_click){
 				var el = closest(ev.target, k);
 				if (el){
-					on_click[k](el);
+					on_click[k](el, ev);
 					refresh();
+               ev.stopPropagation();
+					ev.preventDefault();
 					return false;
 				}
 			}

@@ -14,14 +14,19 @@
 
     'use strict';
 
+    var hasTouch = ('ontouchstart' in window);
+
     function Tap(el) {
         this.element = typeof el === 'object' ? el : document.getElementById(el);
         this.moved = false; //flags if the finger has moved
         this.startX = 0; //starting x coordinate
         this.startY = 0; //starting y coordinate
         this.hasTouchEventOccured = false; //flag touch event
-        this.element.addEventListener('touchstart', this, false);
-        this.element.addEventListener('mousedown', this, false);
+        if (hasTouch) {
+           this.element.addEventListener('touchstart', this, false);
+        } else {
+           this.element.addEventListener('mousedown', this, false);
+        }
     }
 
     //start
@@ -52,6 +57,7 @@
 
     //end
     Tap.prototype.end = function (e) {
+        if (e.touches.length) return;
         var evt;
 
         if (this.hasTouchEventOccured && e.type === 'mouseup') {

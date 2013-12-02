@@ -39,6 +39,32 @@ var Player = {
 
 };
 
+function reflip(){
+   if (!Player.current.sound || !sorted_actions) return;
+   if (!Player.current.sound.position) return;
+   var s = Player.current.sound.position / 1000;
+   var last_flipped;
+   for (var i = 0; i < sorted_actions.length; i++) {
+      var a = sorted_actions[i];
+      if (Math.abs(a.t - s) < 5) {
+         $(a.id).className = "show";
+         last_flipped = i;
+      } else {
+         $(a.id).className = "hide";
+      }
+   }
+   var next;
+   if (last_flipped !== undefined) {
+      next = sorted_actions[last_flipped+1];
+      if (next === undefined){
+         next_flip_time = s+10000;
+      } else {
+         next_flip_time = next.t - 5;
+      }
+   }
+   return last_flipped;
+}
+
 
 Fireball(F, {
    map:{
@@ -51,7 +77,8 @@ Fireball(F, {
       '#comments...'    : '/comments/$experience',
 
       "#results...": function(paint) {
-	      if (!searchq || !Fireball.changed('searchq')) return;
+         if (!Fireball.changed('searchq')) return;
+	      if (!searchq) return paint([]); 
 	      SC.get('/tracks', { q: searchq }, function(tracks) {
             paint(tracks);
 	      });
@@ -64,13 +91,19 @@ Fireball(F, {
          for (var k in v){ v[k].id = k; actions.push(v[k]); }
          sorted_actions = actions.sort(function(a,b){ return a.t - b.t; });
          next_flip_time = null;
+         reflip();
       },
 
       '#experience': function(v){
+         searchq = null; 
+
          if (!v || !v.saved) $('experience').className = 'editing';
          else $('experience').className = 'playing';
 
-         if (!v) return Fireball.refresh();
+         if (!v){
+            $('playhead').style.top = 0;
+            return Fireball.refresh();
+         }
                
          if (v.duration){
             $('timeline').style.height = (v.duration * 8) + "px";
@@ -80,6 +113,7 @@ Fireball(F, {
                
          if (!v.soundcloud_url) return Fireball.refresh();
 
+
          $('play').innerHTML = "&#8230;";
          Player.stream('load', v.soundcloud_url, $('play'), {
             whileplaying: function(){
@@ -88,25 +122,7 @@ Fireball(F, {
 
                  if (sorted_actions && (!next_flip_time || s >= next_flip_time)){
                     if (next_flip_time) beep();
-                    var last_flipped;
-                    for (var i = 0; i < sorted_actions.length; i++) {
-                       var a = sorted_actions[i];
-                       if (Math.abs(a.t - s) < 5) {
-                          $(a.id).className = "show";
-                          last_flipped = i;
-                       } else {
-                          $(a.id).className = "hide";
-                       }
-                    }
-                    var next;
-                    if (last_flipped !== undefined) {
-                       next = sorted_actions[last_flipped+1];
-                       if (next === undefined){
-                          next_flip_time = s+10000;
-                       } else {
-                          next_flip_time = next.t - 5;
-                       }
-                    }
+                    var last_flipped = reflip();
                  }
 
                  //var actions = Fireball.latest('#actions');
@@ -260,7 +276,7 @@ Fireball(F, {
 	      if (sure) Fireball('#actions').child(el.id).remove();
       },
 	
-      '#add_action button': function(el){
+      '#add_action button': function(el, ev){
          var new_action = prompt('What:');
          if (new_action) Fireball('#actions').push({
             t: Player.current.sound.position / 1000,
@@ -296,6 +312,8 @@ Fireball(F, {
       },
       ".rewind": function(){
          if (Player.current.sound) Player.current.sound.setPosition(0);
+         $('playhead').style.top=0;
+         reflip();
       },
       "#play": function(){
          if (Player.current.sound) return Player.current.sound.togglePause();
@@ -308,17 +326,25 @@ Fireball(F, {
 var beep = (function () {
    var ctx = new(window.audioContext || window.webkitAudioContext);
    return function (duration, type, finishedCallback) {
-      if (!duration) duration = 100;
+      if (!duration) duration = 60;
       if (!type) type = 0;
       duration = +duration;
       type = (type % 5) || 0;  // Only 0-4 are valid types.
       if (typeof finishedCallback != "function") {
          finishedCallback = function () {};
       }
+
       var osc = ctx.createOscillator();
+      //var reverb = ctx.createConvolver();
+      var gain = ctx.createGainNode();
+      gain.gain.value = 0.17;
       osc.type = type;
-      osc.frequency.value = 880*2.0;
-      osc.connect(ctx.destination);
+      osc.frequency.value = 880*1.5;
+      osc.connect(gain);
+      //osc.connect(reverb);
+      //reverb.connect(gain);
+      gain.connect(ctx.destination);
+
       osc.noteOn(0);
       setTimeout(function () { osc.noteOff(0); finishedCallback(); }, duration);
    };
