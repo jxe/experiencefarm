@@ -277,12 +277,14 @@ Fireball(F, {
       },
 	
       '#add_action button': function(el, ev){
-         var new_action = prompt('What:');
-         if (new_action) Fireball('#actions').push({
+         var ref = Fireball('#actions').push({
             t: Player.current.sound.position / 1000,
             type: el.innerText,
-            text: new_action
+            text: "...."
          });
+         var new_action = prompt('What:');
+         if (new_action) ref.update({ text: new_action });
+         else ref.remove();
       },
           
       '#new_city': function(){
