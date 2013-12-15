@@ -2,6 +2,15 @@ Simple Firemapper test
 
 
 
+- if two players, actions need to be accepted
+- beep on new action from other player
+
+- action poster has little arrow and popover to select action type
+
+
+
+
+
 http://getbootstrap.com/examples/starter-template/
 
 

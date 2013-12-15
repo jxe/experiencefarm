@@ -26,6 +26,7 @@ var Player = {
       Player.current.track = track;
       Player.current.indicator = indicator;
       SC.stream(track, function(sound){
+          if (!sound || !sound[method]) { console.log(sound); return; }
           Player.current.sound = sound;
           if (indicator){
              indicator.innerHTML = "&#9654;";
