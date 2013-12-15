@@ -1,6 +1,28 @@
 Simple Firemapper test
 
 
+- "Me too!" button on notices from another person
+- update notices count on experience during add/delete
+- replace comment button with comment textfield
+- put share below it
+
+- complete feed page
+	- tab on feed that's like "all | nearby"
+	- combine all cities into one stream
+	- "You can't play this, it's too far away"
+	- support limiting experiences on homescreen to those nearby
+	- kill choose city screen
+	- display hidden notices count on homescreen
+
+
+Later
+	- infinite scrolling for feed page... just loads 100 initially
+
+
+
+
+
+
 
 - if two players, actions need to be accepted
 - beep on new action from other player

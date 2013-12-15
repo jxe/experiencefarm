@@ -95,7 +95,7 @@
 
 	var templates = {}, mapping = {}, calculated_fields = {}, latest = {};
 	var show_when = {}, on_click = {}, on_submit = {}, on_change = {}, on_update = {};
-	var live_fns = {};
+	var live_fns = {}, filter_fns = {};
 
 	function matches(element, selector){
 		if (!element || element.nodeType !== 1) return false;
@@ -170,7 +170,7 @@
 			if (!o.id) o.id = k;
 			var clone = dom.cloneNode(true);
 			clone.data = o;
-			clone.path = path + '/' + o.id;
+			if (path) clone.path = path + '/' + o.id;
 			clone.id = o.id;
 			doms.push(project(o, clone, domid));
 		}
@@ -178,8 +178,9 @@
 	}
 
 
-	function projectOnto(domid, value, path){
-		latest[domid] = value;
+	function projectOnto(domid, path){
+		var value = latest[domid];
+		if (filter_fns[domid]) value = filter_fns[domid](value);
 		if (domid.match(/\.\.\.$/)){
 			var domid2 = domid.slice(0,-3);
 			var outer = document.querySelector(domid2);
@@ -213,12 +214,18 @@
 			return;
 		}
 
+		if (typeof path == 'array'){
+			filter_fns[domid] = path[1];
+			path = path[0];
+		}
+
 		var dyn = fbref.dynamic(path);
 		mapping[simpleSelector(domid)] = dyn;
 
 		dyn.on('value', function(snap){
 			var o = snap.val();
-			projectOnto(domid, o, path);
+			latest[domid] = o;
+			projectOnto(domid, path);
 		});
 	}
 
@@ -227,7 +234,8 @@
 		return sel;
 	}
 
-	function refresh(){
+	function refresh(obj){
+		if (obj) return projectOnto(obj);
 		for (var k in show_when){
 			var nodes = document.querySelectorAll(k);
 			for (var i = 0; i < nodes.length; i++) {
@@ -240,7 +248,7 @@
 			var nodes = document.querySelectorAll(simpleSelector(k));
 			for (var i = 0; i < nodes.length; i++) {
 				var el = nodes[i];
-				live_fns[k](function(value){ projectOnto(k, value); });
+				live_fns[k](function(value){ latest[k] = value; projectOnto(k); });
 			}
 		}
 	}

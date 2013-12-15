@@ -2,9 +2,30 @@ var page = "home", searchq;
 var F = new Firebase("http://songwalks.firebaseio.com/");
 var current_sound, show_browse, page, show_compose, 
 	next_flip_time, sorted_actions;
+var curloc;
+
 function $(x){ return document.getElementById(x); }
 
 if (navigator.standalone) document.getElementsByTagName('body')[0].className = 'standalone';
+
+
+function distance(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
 
 var Player = {
 
@@ -164,11 +185,14 @@ Fireball(F, {
       },
 
       '#add_sugg': function(input){
+         var actions = Fireball.latest('#actions...');
          Fireball('#actions').push({
             t: Player.current.sound.position / 1000,
             type: "Instruction",
             text: input.value
          });
+         var count = Object.keys(actions).length;
+         Fireball('#experience').update({ 'notice_count': count + 1 });
          input.value = '';
          input.blur();
       },
@@ -181,12 +205,42 @@ Fireball(F, {
 
    calculated_fields:{
 
+      "#experiences expnotices": function(exp){
+         if (exp.notice_count) return "has " + exp.notice_count + " hidden notices";
+         else return "";
+      },
       "#experience googlemap": function(exp){
          if (!exp.start_loc) return "<a href='#' id='geolocate'>Geolocate!</a>";
          var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=";
          mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
          mapUrl = mapUrl + '&zoom=16&size=320x100&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
          return "<img src='"+mapUrl+"'>";
+      },
+
+      "#experience expstyle": function(exp){
+         if (!exp.start_loc) return "";
+         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=";
+         mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
+         mapUrl = mapUrl + '&zoom=16&size=320x200&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
+         return "background-image: url(" + mapUrl + ");";
+      },
+
+      "#experiences expstyle": function(exp){
+         if (!exp.start_loc) return "";
+         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=";
+         mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
+         mapUrl = mapUrl + '&zoom=16&size=320x200&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
+         return "background-image: url(" + mapUrl + ");";
+      },
+
+      "#experiences expdist": function(exp){
+         if (!curloc) return "";
+         var km = distance(exp.start_loc[0], exp.start_loc[1], curloc[0], curloc[1]);
+         if (km < 1){
+            return "close enough to play!"
+         } else {
+            return km + " km away...";
+         }
       },
       
       "#experiences calctitle": function(exp){
@@ -228,6 +282,8 @@ Fireball(F, {
    },
    
    show_when:{
+
+      '#get_distance': function(){ return !curloc; },
       '#experience': function(){ return Fireball.get('$experience'); },
 
       '.saved': function(){
@@ -283,11 +339,17 @@ Fireball(F, {
          Fireball.set('$experience', el.id);
       },
 
+      '#get_distance': function(){
+         navigator.geolocation.getCurrentPosition(function(pos){
+            curloc = [ pos.coords.latitude, pos.coords.longitude ];
+            Fireball.refresh('#experiences...');
+         });
+      },
+
       "#new_experience": function(){
          navigator.geolocation.getCurrentPosition(function(pos){
-            var id = Fireball('#experiences').push({ 'start_loc': [
-               pos.coords.latitude, pos.coords.longitude
-            ]}).name();
+            curloc = [ pos.coords.latitude, pos.coords.longitude ];
+            var id = Fireball('#experiences').push({ 'start_loc': curloc}).name();
             Player.clear();
             Fireball.set('$experience', id);
          });
@@ -300,20 +362,12 @@ Fireball(F, {
          var latest = Fireball.latest('#experience');
          if (latest && latest.saved) return;
          var sure = confirm("Do you want to delete this instruction?");
-	      if (sure) Fireball('#actions').child(el.id).remove();
+	      if (!sure) return;
+         var actions = Fireball.latest('#actions...');
+         Fireball('#actions').child(el.id).remove();
+         Fireball('#experience').update({ 'notice_count': actions.length - 1 });
       },
-	
-      '#add_action button': function(el, ev){
-         var ref = Fireball('#actions').push({
-            t: Player.current.sound.position / 1000,
-            type: el.innerText,
-            text: "...."
-         });
-         var new_action = prompt('What:');
-         if (new_action) ref.update({ text: new_action });
-         else ref.remove();
-      },
-          
+	          
       '#new_city': function(){
 	      var name = prompt('City:');
 	      if (name) Fireball('#cities').push({name:name});

@@ -33,12 +33,29 @@
    <header>
       <a href="#" id="change_city">Change city</a>
       <h1><b id="count_string"></b> in <b data-set="text:name">NYC</b></h1>
+      <a href="#" id="new_experience">Add</a>
    </header>
    <div class="content">
+      <button id="get_distance">Get Location</button>
       <ul id="experiences">
-         <li><a href="#" data-set="text:calctitle"></a></li>
+         <li>
+            <div class="experience_header" data-set="style:expstyle">
+               <a href="#">
+                  <div class="title">
+                     <b data-set="text:song_title"></b> @ 
+                     <b data-set="text:placename"></b>
+                  </div>
+                  <div data-set="text:expdist">
+                     Near enough
+                  </div>
+                  <div>
+                     <img src="play.png" style="max-width:50px">
+                  </div>
+               </a>
+            </div>
+            <div class="notices_count" data-set="text:expnotices"></div>
+         </li>
       </ul>
-      <button id="new_experience">New experience</button>
    </div>
 </div>
 
@@ -57,38 +74,21 @@
 
    <div class="content">
 
-      <div id="header">
-         <form class="notsaved" id="compose_experience">
-            <div class="cell">
-               <h2>play this</h2>
-               <b data-set="text:song_title"></b>
-            </div>
-            <div class="cell">
-               <h2>here</h2>
-               <input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
-            </div>
-         </form>
-         <div class="saved" id="play_experience">
-            <div class="cell">
-               <h2>play this</h2>
-               <b data-set="text:song_title"></b>
-            </div>
-            <div class="cell">
-               <h2>here</h2>
-               <b data-set="text:placename"></b>
-            </div>
+      <div class="experience_header hassong" data-set="style:expstyle">
+         <div class="title">
+            <b data-set="text:song_title"></b> @ 
+            <b data-set="text:placename"></b>
          </div>
-      </div>
-
-      <div id="playwell">
-         <div id="map">
-            <a id="geolocate" data-set="text:googlemap">(map here)</a>
+         <div data-set="text:expdist">
+            Near enough
          </div>
-         <a class="hassong" id="play" href="#">&#9654;</a>
+         <div>
+            <a class="hassong" id="play" href="#">&#9654;</a>
+         </div>
       </div>
 
       <div id="pick_song" class="nosong">
-         <form id="search"><input name="q" placeholder="search for a song" /></form>
+         <form id="search"><input name="q" placeholder="search for a song to play here" /></form>
          <ul id="results">
             <a href="#"><li >
                <span class="indicator">PLAY</span>
@@ -97,6 +97,16 @@
             </li></a>
          </ul>
       </div>
+
+      <div class="notsaved" id="header">
+         <form class="hassong" id="compose_experience">
+            <div class="cell">
+               <h2>Describe starting location</h2>
+               <input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
+            </div>
+         </form>
+      </div>
+
 
       <div id="timeline" class="hassong">
          <div id="playhead"></div>
@@ -110,8 +120,8 @@
             </a>
          </div>
          <form class="fake_action notsaved">
-            Why don't we...
-            <input id="add_sugg" placeholder="Make a suggestion...">
+            What do you notice, nearby?
+            <input id="add_sugg" placeholder="...">
          </form>
       </div>
 
