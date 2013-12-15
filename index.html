@@ -55,35 +55,35 @@
    </header>
 
    <div class="content">
-      <div id="map">
-         <a id="geolocate" data-set="text:googlemap">(map here)</a>
+
+      <div id="header">
+         <form class="notsaved" id="compose_experience">
+            <div class="cell">
+               <h2>play this</h2>
+               <b data-set="text:song_title"></b>
+            </div>
+            <div class="cell">
+               <h2>here</h2>
+               <input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
+            </div>
+         </form>
+         <div class="saved" id="play_experience">
+            <div class="cell">
+               <h2>play this</h2>
+               <b data-set="text:song_title"></b>
+            </div>
+            <div class="cell">
+               <h2>here</h2>
+               <b data-set="text:placename"></b>
+            </div>
+         </div>
       </div>
 
-      <div class="well" id="about">
-         <a class="hassong" id="play" href="#">&#9654;</a>
-         <form class="notsaved" id="compose_experience">
-            #
-            <select id="quality" data-set="value:quality" name="quality">
-               <option>artful</option>
-               <option>athletic</option>
-               <option>challenging</option>
-               <option>disco</option>
-               <option>oddball</option>
-               <option>quiet</option>
-               <option>sweet</option>
-               <option>simple</option>
-            </select>,
-            set to <b data-set="text:song_title"></b>,
-            starts
-            <input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
-         </form>
-
-         <div class="saved" id="play_experience">
-            An #<b data-set="text:quality"></b> experience,
-            set to <b data-set="text:song_title"></b>,
-            starts <b data-set="text:placename"></b>      
+      <div id="playwell">
+         <div id="map">
+            <a id="geolocate" data-set="text:googlemap">(map here)</a>
          </div>
-            <!--<a style="float:right" id="rewind" href="#">&#9650;</a>-->
+         <a class="hassong" id="play" href="#">&#9654;</a>
       </div>
 
       <div id="pick_song" class="nosong">
@@ -98,16 +98,21 @@
       </div>
 
       <div id="timeline" class="hassong">
-         <img id="waveform" data-set="src:waveform_url">
          <div id="playhead"></div>
          <div id="actions">
-            <a data-set="style:#actions:style" style="top: 159px" >
+            <a>
+               <div class="backdrop" data-set="style:#actions:style"></div>
+               <div class="vbar" data-set="style:#actions:barstyle"></div>
+               <!-- <img id="waveform" data-set="src:waveform_url"> -->
                <i data-set="text:#actions:type"></i>
                <span data-set="text:#actions:text">Blow bubbles</span>
             </a>
          </div>
+         <form class="fake_action notsaved">
+            Why don't we...
+            <input id="add_sugg" placeholder="Make a suggestion...">
+         </form>
       </div>
-
 
       <div class="saved" id="comment_section">
          <button id="share">Share</button>
@@ -120,8 +125,7 @@
 
    </div>
 
-   <div class="hassong">
-   <div class="notsaved" id="add_action">
+<!--    <div id="add_action">
       <h3>Add</h3>
       <button>Dance move</button>
       <button>Fitness activity</button>
@@ -130,7 +134,7 @@
       <button>Interact w object</button>
       <button>Make a sound</button>
    </div>
-   </div>
+ -->   
 
 </div>
 

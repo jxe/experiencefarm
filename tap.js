@@ -52,7 +52,7 @@
 
     //end
     Tap.prototype.end = function (e) {
-        if (e.touches.length) return;
+        if (e.touches && e.touches.length) return;
         var evt;
 
         if (this.hasTouchEventOccured && e.type === 'mouseup') {

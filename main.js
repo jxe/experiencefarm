@@ -101,14 +101,13 @@ Fireball(F, {
          else $('experience').className = 'playing';
 
          if (!v){
-            $('playhead').style.top = 0;
+            $('playhead').style.left = 0;
             return Fireball.refresh();
          }
-               
+         
          if (v.duration){
-            $('timeline').style.height = (v.duration * 8) + "px";
-            $('waveform').style.webkitTransform = 
-               "rotate(90deg) scale("+(v.duration * 8 / 1800)+",1.15)";
+            // $('timeline').style.height = (v.duration * 8) + "px";
+            // $('waveform').style.webkitTransform = "rotate(90deg) scale("+(v.duration * 8 / 1800)+",1.15)";
          }
                
          if (!v.soundcloud_url) return Fireball.refresh();
@@ -118,7 +117,9 @@ Fireball(F, {
          Player.stream('load', v.soundcloud_url, $('play'), {
             whileplaying: function(){
                  var s = Player.current.sound.position / 1000;
-                 $('playhead').style.top = (s*8) + "px";
+                 var percent = Player.current.sound.position / Player.current.sound.duration;
+                 var px = percent * 320;
+                 $('playhead').style.left = (px) + "px";
 
                  if (sorted_actions && (!next_flip_time || s >= next_flip_time)){
                     if (next_flip_time) beep();
@@ -160,6 +161,17 @@ Fireball(F, {
       '#placename': function(pn){
          Fireball('#experience').update({placename: pn.value});
       },
+
+      '#add_sugg': function(input){
+         Fireball('#actions').push({
+            t: Player.current.sound.position / 1000,
+            type: "Instruction",
+            text: input.value
+         });
+         input.value = '';
+         input.blur();
+      },
+
       //   properties.author_name = form.author_name.value;
       //   properties.to_name = form.to_name.value;
       '#search input': function(q){ searchq = q.value; }
@@ -167,6 +179,7 @@ Fireball(F, {
    
 
    calculated_fields:{
+
       "#experience googlemap": function(exp){
          if (!exp.start_loc) return "<a href='#' id='geolocate'>Geolocate!</a>";
          var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=";
@@ -178,14 +191,14 @@ Fireball(F, {
       "#experiences calctitle": function(exp){
          // TODO: make from start loc name and song name and authors
 
-	if (exp.quality){
-		var msg = "An <b>#" + exp.quality + "</b> experience, set to <b>&ldquo;" + exp.song_title + "&rdquo;</b>. ";
-		if (exp.to_name) msg += "with <b>" + exp.to_name + "</b> in mind.  ";
-		if (exp.placename) msg+= "<br>starts <b>" + exp.placename + "</b>";
-		if (exp.author_name) msg += ", by <b>" + (exp.author_name) + "</b>.  ";
-      else msg += ".";
-		return msg;
-	}
+      	if (exp.quality){
+      		var msg = "An <b>#" + exp.quality + "</b> experience, set to <b>&ldquo;" + exp.song_title + "&rdquo;</b>. ";
+      		if (exp.to_name) msg += "with <b>" + exp.to_name + "</b> in mind.  ";
+      		if (exp.placename) msg+= "<br>starts <b>" + exp.placename + "</b>";
+      		if (exp.author_name) msg += ", by <b>" + (exp.author_name) + "</b>.  ";
+            else msg += ".";
+      		return msg;
+      	}
 
          if (exp.to_name){
 	         return "With <b>" + exp.to_name + "</b> in mind, <b>" + (exp.author_name || "Someone") + "</b>, came up with a way of enjoying &ldquo;" + exp.song_title + "&rdquo; starting at &ldquo;" + exp.placename + "&rdquo;";
@@ -193,10 +206,23 @@ Fireball(F, {
 	         return "<b>" + (exp.author_name || "Someone") + "</b> has a way of enjoying &ldquo;" + exp.song_title + "&rdquo; starting at &ldquo;" + exp.placename + "&rdquo;";
          }
       },
-      
+
+      '#actions waveform_url': function(action){
+         var l = Fireball.latest('#experience'); 
+         return l && l.waveform_url;
+      },
 
       '#actions style': function(action){
-         return "top: " + (action.t * 8 + 5) + "px";
+         var l = Fireball.latest('#experience'); 
+         return "background-image: url(" + l.waveform_url + ")";
+         // return "top: " + (action.t * 8 + 5) + "px";
+      },
+
+      '#actions barstyle': function(action){
+         var l = Fireball.latest('#experience'); 
+         var percent = action.t / l.duration;
+         return "left:" + percent*320;
+        // return "top: " + (action.t * 8 + 5) + "px"; 
       }
    },
    
@@ -224,21 +250,21 @@ Fireball(F, {
    },
 
    on_click: {
-	"#results a .choose_song": function(b){
-		var data = b.parentNode.parentNode.data;
-		Fireball('#experience').update({
-                     soundcloud_url: "/tracks/" + data.id,
-                     soundcloud_id: data.id,
-                     waveform_url: data.waveform_url,
-                     song_title: data.title,
-                     duration: data.duration / 1000
-		});
-	},
+   	"#results a .choose_song": function(b){
+   		var data = b.parentNode.parentNode.data;
+   		Fireball('#experience').update({
+                        soundcloud_url: "/tracks/" + data.id,
+                        soundcloud_id: data.id,
+                        waveform_url: data.waveform_url,
+                        song_title: data.title,
+                        duration: data.duration / 1000
+   		});
+   	},
 
-	"#results a": function(a){
-		var data = a.data;
-      Player.stream('play', '/tracks/' + data.id);
-	},
+   	"#results a": function(a){
+   		var data = a.data;
+         Player.stream('play', '/tracks/' + data.id);
+   	},
 
 
       "#share": function(){
@@ -314,7 +340,7 @@ Fireball(F, {
       },
       ".rewind": function(){
          if (Player.current.sound) Player.current.sound.setPosition(0);
-         $('playhead').style.top=0;
+         $('playhead').style.left=0;
          reflip();
       },
       "#play": function(){
