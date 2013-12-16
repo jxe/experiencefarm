@@ -16,27 +16,26 @@
 
 
 
-<div class="page" id="choose_city">
-   <header><h1>Choose your city</h1></header>
-   <div class="content">
-      <ul id="cities">
-         <a href="#" ><li data-set="text:name"></li></a>
-      </ul>
-      <button id="new_city">Add</button>
-   </div>
-</div>
-
-
-
-
 <div class="page" id="city">
    <header>
-      <a href="#" id="change_city">Change city</a>
-      <h1><b id="count_string"></b> in <b data-set="text:name">NYC</b></h1>
+      <a href="#" id="get_distance">Get Location</a>
+      <h1>The Latest</h1>
       <a href="#" id="new_experience">Add</a>
    </header>
    <div class="content">
-      <button id="get_distance">Get Location</button>
+
+      <div id="pick_song">
+         <form id="search"><input name="q" placeholder="search for a song to play here" /></form>
+         <ul id="results">
+            <a href="#"><li >
+               <span class="indicator">PLAY</span>
+               <span data-set="text:title">Song title</span>
+               <button class="choose_song">Choose</button>
+            </li></a>
+         </ul>
+      </div>
+
+
       <ul id="experiences">
          <li>
             <div class="experience_header" data-set="style:expstyle">
@@ -85,17 +84,6 @@
          <div>
             <a class="hassong" id="play" href="#">&#9654;</a>
          </div>
-      </div>
-
-      <div id="pick_song" class="nosong">
-         <form id="search"><input name="q" placeholder="search for a song to play here" /></form>
-         <ul id="results">
-            <a href="#"><li >
-               <span class="indicator">PLAY</span>
-               <span data-set="text:title">Song title</span>
-               <button class="choose_song">Choose</button>
-            </li></a>
-         </ul>
       </div>
 
       <div class="notsaved" id="header">

@@ -2,7 +2,7 @@ var page = "home", searchq;
 var F = new Firebase("http://songwalks.firebaseio.com/");
 var current_sound, show_browse, page, show_compose, 
 	next_flip_time, sorted_actions;
-var curloc;
+var curloc, show_pick_song;
 
 function $(x){ return document.getElementById(x); }
 
@@ -90,11 +90,8 @@ function reflip(){
 
 Fireball(F, {
    map:{
-      '#city'        : '/cities/$city',
-      '#experience'  : '/experiences_in_city/$city/$experience',
-
-      '#cities...'      : '/cities',
-      '#experiences...' : '/experiences_in_city/$city',
+      '#experience'  : '/pairings/$experience',
+      '#experiences...' : '/pairings',
       '#actions...'     : '/p2/actions/$experience',
       '#comments...'    : '/comments/$experience',
 
@@ -282,8 +279,9 @@ Fireball(F, {
    },
    
    show_when:{
-
+      '#pick_song': function(){ return show_pick_song; },
       '#get_distance': function(){ return !curloc; },
+      '#city': function(){ return !Fireball.get('$experience'); },
       '#experience': function(){ return Fireball.get('$experience'); },
 
       '.saved': function(){
@@ -301,21 +299,26 @@ Fireball(F, {
       '.nosong': function(){
          var latest = Fireball.latest('#experience');
          return latest && !latest.song_title; 
-      },
-      "#choose_city": function(){ return !Fireball.get("$city"); },
-      "#city": function(){ return Fireball.get("$city") && !Fireball.get('$experience'); }
+      }
    },
 
    on_click: {
    	"#results a .choose_song": function(b){
    		var data = b.parentNode.parentNode.data;
-   		Fireball('#experience').update({
-                        soundcloud_url: "/tracks/" + data.id,
-                        soundcloud_id: data.id,
-                        waveform_url: data.waveform_url,
-                        song_title: data.title,
-                        duration: data.duration / 1000
-   		});
+         show_pick_song = false;
+         navigator.geolocation.getCurrentPosition(function(pos){
+            curloc = [ pos.coords.latitude, pos.coords.longitude ];
+            var id = Fireball('#experiences').push({
+               'start_loc': curloc,
+               soundcloud_url: "/tracks/" + data.id,
+               soundcloud_id: data.id,
+               waveform_url: data.waveform_url,
+               song_title: data.title,
+               duration: data.duration / 1000
+            }).name();
+            Player.clear();
+            Fireball.set('$experience', id);
+         });
    	},
 
    	"#results a": function(a){
@@ -346,17 +349,11 @@ Fireball(F, {
          });
       },
 
-      "#new_experience": function(){
-         navigator.geolocation.getCurrentPosition(function(pos){
-            curloc = [ pos.coords.latitude, pos.coords.longitude ];
-            var id = Fireball('#experiences').push({ 'start_loc': curloc}).name();
-            Player.clear();
-            Fireball.set('$experience', id);
-         });
+      '#new_experience': function(){
+         show_pick_song = true;
       },
+
       "#browse": function(){ Fireball.set('$experience', null);  },
-      "#change_city": function(){ Fireball.set('$city', null); },
-      "#cities a": function(el){ Fireball.set('$city', el.id); },
       
       '#actions>a': function(el){
          var latest = Fireball.latest('#experience');
@@ -365,14 +362,10 @@ Fireball(F, {
 	      if (!sure) return;
          var actions = Fireball.latest('#actions...');
          Fireball('#actions').child(el.id).remove();
-         Fireball('#experience').update({ 'notice_count': actions.length - 1 });
+         var count = Object.keys(actions).length;
+         Fireball('#experience').update({ 'notice_count': count - 1 });
       },
-	          
-      '#new_city': function(){
-	      var name = prompt('City:');
-	      if (name) Fireball('#cities').push({name:name});
-      },
-		   
+	  		   
       '#geolocate':function(){
          var latest = Fireball.latest('#experience');
          if (latest && latest.saved) return;
