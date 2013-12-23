@@ -62,7 +62,7 @@ var Player = {
 };
 
 function nextSong(){
-  if (!playlist || playlist.length == 0) return;
+  if (!playlist || playlist.errors || playlist.length == 0) return;
   now_playing = playlist.pop();
   Player.stream('play', '/tracks/' + now_playing.id, null, { onfinished: nextSong });
   Fireball.refresh();
@@ -182,6 +182,10 @@ Fireball(F, {
    },
    
    on_change:{
+      "#add_comment": function(q){
+         Fireball('#comments').push({ text: q.value });
+      },
+
       '#quality': function(q){
          Fireball('#experience').update({quality: q.value});
       },
@@ -324,10 +328,13 @@ Fireball(F, {
       show_genres = false;
       SC.get('/tracks', { genres: genre, order: 'hotness' }, function(tracks) {
         if (!tracks) return alert('no songs in that genre!');
+        if (tracks.errors) { console.log(tracks);  return('attempt to fetch songs failed'); }
         playlist = tracks; // shuffle(tracks);
         nextSong();
       });
     },
+    '#stop': function(){ Player.clear(); now_playing = null; },
+    '#fast_forward': function(){ nextSong(); },
    	"#sprout": function(b){
        var data = now_playing;
        navigator.geolocation.getCurrentPosition(function(pos){
@@ -358,11 +365,6 @@ Fireball(F, {
          var url = "http://experiencefarm.org/#!experience/" + Fireball.get('$experience');
          url = encodeURIComponent(url);
          window.location = "mailto:?subject=I%20made%20you%20a%20thing&body="+url;
-      },
-      "#add_comment": function(){
-         var comment = prompt('comment:');
-         if (!comment) return;
-         Fireball('#comments').push({ text: comment });
       },
       "#experiences li": function(el){
          beep();
@@ -419,10 +421,22 @@ Fireball(F, {
          var count = actions ? Object.keys(actions).length : 0;
          Fireball('#experience').update({ 'notice_count': count - 1 });
       },
-	  		   
-      '#geolocate':function(){
+	  	
+      ".rewind": function(){
+         if (Player.current.sound) Player.current.sound.setPosition(0);
+         $('playhead').style.left=0;
+         reflip();
+      },
+      "#play": function(){
+         if (Player.current.sound) return Player.current.sound.togglePause();
+         else return alert('No current sound');
+      },
+
+
+      '#map_clicked':function(){
          var latest = Fireball.latest('#experience');
          if (latest && latest.saved) return;
+         if (!confirm('Update map?')) return;
          navigator.geolocation.getCurrentPosition(function(pos){
             Fireball('#experience').update({ 'start_loc': [
                pos.coords.latitude, pos.coords.longitude
@@ -439,15 +453,6 @@ Fireball(F, {
       "#delete":function(){
          Fireball('#experience').remove();
          Fireball.set("$experience", null);
-      },
-      ".rewind": function(){
-         if (Player.current.sound) Player.current.sound.setPosition(0);
-         $('playhead').style.left=0;
-         reflip();
-      },
-      "#play": function(){
-         if (Player.current.sound) return Player.current.sound.togglePause();
-         else return alert('No current sound');
       }
 	}
 	

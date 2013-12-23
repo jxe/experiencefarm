@@ -24,20 +24,20 @@
    <div class="content">
       <ul id="genres">
          <li><a href="#">80s</a></li>
-         <li><a href="#">Ambient</a></li>
-         <li><a href="#">Americana</a></li>
-         <li><a href="#">Avantgarde</a></li>
-         <li><a href="#">Blues</a></li>
-         <li><a href="#">Chiptunes</a></li>
-         <li><a href="#">Choir</a></li>
-         <li><a href="#">Electronic</a></li>
-         <li><a href="#">Hip-hop</a></li>
-         <li><a href="#">Glitch</a></li>
-         <li><a href="#">Gregorian</a></li>
-         <li><a href="#">Gospel</a></li>
-         <li><a href="#">Minimal</a></li>
-         <li><a href="#">Orchestral</a></li>
-         <li><a href="#">Piano</a></li>
+         <li><a href="#">ambient</a></li>
+         <li><a href="#">americana</a></li>
+         <li><a href="#">avantgarde</a></li>
+         <li><a href="#">blues</a></li>
+         <li><a href="#">chiptunes</a></li>
+         <li><a href="#">choir</a></li>
+         <li><a href="#">electronic</a></li>
+         <li><a href="#">hip-hop</a></li>
+         <li><a href="#">glitch</a></li>
+         <li><a href="#">gregorian</a></li>
+         <li><a href="#">gospel</a></li>
+         <li><a href="#">minimal</a></li>
+         <li><a href="#">orchestral</a></li>
+         <li><a href="#">piano</a></li>
       </ul>
       <div id="pick_song">
          <ul id="results">
@@ -49,12 +49,19 @@
       </div>
 
       <div id="now_playing_section">
-         <b data-set="text:title">Title</b>
-         <button id="sprout">Sprout</button>
+         <div>
+            Now playing:
+            <b data-set="text:title">Title</b>
+         </div>
+         <center>
+            <a href="#" id="stop">&square;</a>
+            <button id="sprout">Make a recording with this</button>
+            <a href="#" id="fast_forward">&rtri;&rtri;</a>
+         </center>
       </div>
 
       <div style="text-align:center" class="tabs">
-         <a href="#" id="sort_latest">Latest</a> |
+         <a href="#" class="active" id="sort_latest">Latest</a> |
          <a href="#" id="sort_nearby">Nearby</a>
       </div>
 
@@ -95,7 +102,7 @@
 
    <div class="content">
 
-      <div class="experience_header hassong" data-set="style:expstyle">
+      <div class="experience_header hassong" data-set="style:expstyle" id="map_clicked">
          <div class="title">
             <b data-set="text:song_title"></b> @ 
             <b data-set="text:placename"></b>
@@ -104,6 +111,7 @@
             Near enough
          </div>
          <div>
+            <a class="hassong rewind" href="#">&ltri;&ltri;</a>
             <a class="hassong" id="play" href="#">&#9654;</a>
          </div>
       </div>
@@ -142,11 +150,10 @@
 
       <div class="saved" id="comment_section">
          <button id="share">Share</button>
-         <h2>Comments</h2>
+         <input id="add_comment" placeholder="Add a comment"\>
          <ul id="comments">
             <li data-set="text:#comments:text"></li>
          </ul>
-         <button id="add_comment">Add a comment</button>
       </div>
 
    </div>
