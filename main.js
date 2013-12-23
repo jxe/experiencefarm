@@ -136,14 +136,9 @@ Fireball(F, {
             $('playhead').style.left = 0;
             return Fireball.refresh();
          }
-         
-         if (v.duration){
-            // $('timeline').style.height = (v.duration * 8) + "px";
-            // $('waveform').style.webkitTransform = "rotate(90deg) scale("+(v.duration * 8 / 1800)+",1.15)";
-         }
-               
+                        
          if (!v.soundcloud_url) return Fireball.refresh();
-
+         if (Player.current.track == v.soundcloud_url) return Fireball.refresh();
 
          $('play').innerHTML = "&#8230;";
          Player.stream('load', v.soundcloud_url, $('play'), {
@@ -152,17 +147,10 @@ Fireball(F, {
                  var percent = Player.current.sound.position / Player.current.sound.duration;
                  var px = percent * 320;
                  $('playhead').style.left = (px) + "px";
-
                  if (sorted_actions && (!next_flip_time || s >= next_flip_time)){
                     if (next_flip_time) beep();
                     var last_flipped = reflip();
                  }
-
-                 //var actions = Fireball.latest('#actions');
-                 //for (var k in actions){
-                 //   if (Math.abs(actions[k].t - s) > 5) $(k).style.backgroundColor = "black";
-                 //   else $(k).style.backgroundColor = "white";
-                 //}
             }
         });
 	},
