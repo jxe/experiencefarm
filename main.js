@@ -9,6 +9,16 @@ function $(x){ return document.getElementById(x); }
 if (navigator.standalone) document.getElementsByTagName('body')[0].className = 'standalone';
 
 
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
 function distance(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -329,7 +339,7 @@ Fireball(F, {
       SC.get('/tracks', { genres: genre, order: 'hotness' }, function(tracks) {
         if (!tracks) return alert('no songs in that genre!');
         if (tracks.errors) { console.log(tracks);  return('attempt to fetch songs failed'); }
-        playlist = tracks; // shuffle(tracks);
+        playlist = shuffleArray(tracks);
         nextSong();
       });
     },
@@ -350,6 +360,7 @@ Fireball(F, {
           }).name();
           Player.clear();
           Fireball.set('$experience', id);
+          Fireball.refresh();
        });
    	},
 
@@ -388,9 +399,9 @@ Fireball(F, {
         for (var i = 0; i < tabs.length; i++) tabs[i].classList && tabs[i].classList.remove('active');
         a.classList.add('active');
         action_type = a.id;
-        if (action_type == 'i_will') $('action_query').innerHTML = "What will you do?";
-        if (action_type == 'i_walk') $('action_query').innerHTML = "Where will you walk?";
-        if (action_type == 'i_notice') $('action_query').innerHTML = "What do you notice, nearby?";
+        if (action_type == 'i_will') $('add_sugg').setAttribute('placeholder', "What will you do?");
+        if (action_type == 'i_walk') $('add_sugg').setAttribute('placeholder', "Where will you walk?");
+        if (action_type == 'i_notice') $('add_sugg').setAttribute('placeholder', "What do you notice, nearby?");
       },
 
       '#sort_nearby': function(a){
@@ -431,7 +442,6 @@ Fireball(F, {
          if (Player.current.sound) return Player.current.sound.togglePause();
          else return alert('No current sound');
       },
-
 
       '#map_clicked':function(){
          var latest = Fireball.latest('#experience');

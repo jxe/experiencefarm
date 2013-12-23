@@ -56,14 +56,14 @@
          </div>
          <center>
             <a href="#" id="stop">&square;</a>
-            <button id="sprout">Make a recording with this</button>
+            <button id="sprout">Pair song with my location</button>
             <a href="#" id="fast_forward">&rtri;&rtri;</a>
          </center>
       </div>
 
       <div style="text-align:center" class="tabs">
-         <a href="#" class="active" id="sort_latest">Latest</a> |
-         <a href="#" id="sort_nearby">Nearby</a>
+         <a href="#" class="active" id="sort_latest">Recent pairings</a>
+         <a href="#" id="sort_nearby">Nearby pairings</a>
       </div>
 
       <ul id="experiences">
@@ -93,7 +93,7 @@
 
    <header class="notsaved rewind" id="edit_header">
       <a href="#" id="delete">delete</a>
-      <h1>Editing</h1>
+      <h1>Make Pairing</h1>
       <a href="#" class="hassong" id="save">save</a>
    </header>
    <header class="saved rewind" id="play_header">
@@ -119,10 +119,7 @@
 
       <div class="notsaved" id="header">
          <form class="hassong" id="compose_experience">
-            <div class="cell">
-               <h2>Describe starting location</h2>
-               <input id="placename" name="placename" data-set="value:placename" placeholder="that starts...">
-            </div>
+            <input id="placename" name="placename" data-set="value:placename" placeholder="Where exactly are you?">
          </form>
       </div>
 
@@ -139,8 +136,7 @@
             </a>
          </div>
          <form class="fake_action notsaved">
-            <span id="action_query">What do you notice, nearby?</span>
-            <input id="add_sugg" placeholder="...">
+            <input id="add_sugg" placeholder="What do you notice, nearby?">
             <div class="tabs">
                <a id="i_notice" class="active" href="#">I notice</a>
                <a id="i_will" href="#">I will</a>

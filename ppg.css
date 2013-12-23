@@ -12,6 +12,31 @@ header { background: #9f9; position: fixed; top: 0; width: 100%; text-align:cent
 
 .tabs {
   text-align: center;
+  padding: 10px;
+  font-size:16px;
+  padding:10px;
+  border: solid thin black;
+  background: #ddd;
+}
+
+header a {
+  background:rgb(84, 82, 59);
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 3px 9px;
+  color:white;  
+}
+
+.tabs a {
+  padding:5px 10px;
+  border-radius:5px;  
+  text-decoration: none;
+}
+
+.tabs a.active {
+  color:black;
+  font-weight: bold;
+  background: white;
 }
 
 #now_playing_section {
@@ -20,9 +45,6 @@ header { background: #9f9; position: fixed; top: 0; width: 100%; text-align:cent
   padding: 10px;
 }
 
-.tabs a.active {
-  color:black; font-weight: bold;
-}
 
 .experience_header {
   text-align: center;
@@ -96,9 +118,9 @@ button { padding: 10px 5px; font-size: 15px; }
 }
 
 header {
-   //-webkit-filter: blur(8px);
+   /*-webkit-filter: blur(8px);*/
    z-index: 10;
-   //background: repeat-x bottom left url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect fill='#ff0000' x='0' y='0' width='1' height='0.5'/></svg>");
+   /*background: repeat-x bottom left url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect fill='#ff0000' x='0' y='0' width='1' height='0.5'/></svg>");*/
 
 
    background: -webkit-linear-gradient(0deg, #be0344, #be0344 0.88%,
@@ -222,7 +244,7 @@ form{ margin:0;}
 #about { background: #f9f; padding: 10px; }
 #geolocate { min-height: 100px; display: block; }
 form input { 
-   width: 250px; 
+   width: 100%; 
    border:none;
    font-size:20px;
    padding:3px 7px
