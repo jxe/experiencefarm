@@ -19,11 +19,25 @@
 <div class="page" id="city">
    <header>
       <input id="search_input" placeholder="search for a song to play here" />
-      <a href="#" id="show_genres">Genres</a>
+      <a href="#" id="show_genres_button">Genres</a>
    </header>
    <div class="content">
       <ul id="genres">
-         <li><a href="#">hiphop</a></li>
+         <li><a href="#">80s</a></li>
+         <li><a href="#">Ambient</a></li>
+         <li><a href="#">Americana</a></li>
+         <li><a href="#">Avantgarde</a></li>
+         <li><a href="#">Blues</a></li>
+         <li><a href="#">Chiptunes</a></li>
+         <li><a href="#">Choir</a></li>
+         <li><a href="#">Electronic</a></li>
+         <li><a href="#">Hip-hop</a></li>
+         <li><a href="#">Glitch</a></li>
+         <li><a href="#">Gregorian</a></li>
+         <li><a href="#">Gospel</a></li>
+         <li><a href="#">Minimal</a></li>
+         <li><a href="#">Orchestral</a></li>
+         <li><a href="#">Piano</a></li>
       </ul>
       <div id="pick_song">
          <ul id="results">
@@ -34,7 +48,7 @@
          </ul>
       </div>
 
-      <div id="now_playing">
+      <div id="now_playing_section">
          <b data-set="text:title">Title</b>
          <button id="sprout">Sprout</button>
       </div>
@@ -116,8 +130,13 @@
             </a>
          </div>
          <form class="fake_action notsaved">
-            What do you notice, nearby?
+            <span id="action_query">What do you notice, nearby?</span>
             <input id="add_sugg" placeholder="...">
+            <div class="tabs">
+               <a id="i_notice" class="active" href="#">I notice</a>
+               <a id="i_will" href="#">I will</a>
+               <a id="i_walk" href="#">I'll walk</a>
+            </div>
          </form>
       </div>
 

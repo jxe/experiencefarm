@@ -1,8 +1,8 @@
 var page = "home", searchq;
 var F = new Firebase("http://songwalks.firebaseio.com/");
-var current_sound, show_browse, page, show_compose, 
-	next_flip_time, sorted_actions, sort, show_genres;
+var page, next_flip_time, sorted_actions, sort, show_genres, playlist, action_type;
 var curloc, now_playing;
+var sessionid = Math.random();
 
 function $(x){ return document.getElementById(x); }
 
@@ -61,6 +61,13 @@ var Player = {
 
 };
 
+function nextSong(){
+  if (!playlist || playlist.length == 0) return;
+  now_playing = playlist.pop();
+  Player.stream('play', '/tracks/' + now_playing.id, null, { onfinished: nextSong });
+  Fireball.refresh();
+}
+
 function reflip(){
    if (!Player.current.sound || !sorted_actions) return;
    if (!Player.current.sound.position) return;
@@ -96,7 +103,7 @@ Fireball(F, {
         for (var k in obj) {
           var exp = obj[k];
           obj[k].id = k; 
-          if (sort != 'nearby' || distance(exp.start_loc[0], exp.start_loc[1], curloc[0], curloc[1]) < 5)
+          if ((sort != 'nearby') || distance(exp.start_loc[0], exp.start_loc[1], curloc[0], curloc[1]) < 25)
             data.push(obj[k]);
         }
         return data.sort(function(a,b){ return (b.created_at||0) - (a.created_at||0); });
@@ -104,13 +111,13 @@ Fireball(F, {
       '#actions...'     : '/p2/actions/$experience',
       '#comments...'    : '/comments/$experience',
 
-      '#now_playing' : function(paint){
+      '#now_playing_section' : function(paint){
         if (now_playing) paint({ title: now_playing.title });
       },
 
       "#results...": function(paint) {
          if (!Fireball.changed('searchq')) return;
-	      if (!searchq) return paint([]); 
+	      if (!searchq) return paint([]);
 	      SC.get('/tracks', { q: searchq }, function(tracks) {
             paint(tracks);
 	      });
@@ -186,10 +193,11 @@ Fireball(F, {
          var actions = Fireball.latest('#actions...');
          Fireball('#actions').push({
             t: Player.current.sound.position / 1000,
-            type: "Instruction",
-            text: input.value
+            type: action_type || "i_notice",
+            text: input.value,
+            seen: [sessionid]
          });
-         var count = Object.keys(actions).length;
+         var count = actions ? Object.keys(actions).length : 0;
          Fireball('#experience').update({ 'notice_count': count + 1 });
          input.value = '';
          input.blur();
@@ -283,7 +291,7 @@ Fireball(F, {
    
    show_when:{
       '#genres': function(){ return show_genres; },
-      '#now_playing': function(){ return now_playing; },
+      '#now_playing_section': function(){ return now_playing; },
       '#pick_song': function(){ return searchq; },
       '#city': function(){ return !Fireball.get('$experience'); },
       '#experience': function(){ return Fireball.get('$experience'); },
@@ -307,6 +315,19 @@ Fireball(F, {
    },
 
    on_click: {
+    '.me_too': function(a){
+      // a.path
+    },
+
+    "#genres a": function(a){
+      var genre = a.innerHTML;
+      show_genres = false;
+      SC.get('/tracks', { genres: genre, order: 'hotness' }, function(tracks) {
+        if (!tracks) return alert('no songs in that genre!');
+        playlist = tracks; // shuffle(tracks);
+        nextSong();
+      });
+    },
    	"#sprout": function(b){
        var data = now_playing;
        navigator.geolocation.getCurrentPosition(function(pos){
@@ -348,7 +369,7 @@ Fireball(F, {
          Fireball.set('$experience', el.id);
       },
 
-      '#show_genres': function(){
+      '#show_genres_button': function(){
         show_genres = !show_genres;
       },
 
@@ -358,6 +379,16 @@ Fireball(F, {
         a.classList.add('active');
         sort = 'latest';
         Fireball.refresh('#experiences...');        
+      },
+
+      '.fake_action .tabs a': function(a){
+        var tabs = a.parentNode.childNodes;
+        for (var i = 0; i < tabs.length; i++) tabs[i].classList && tabs[i].classList.remove('active');
+        a.classList.add('active');
+        action_type = a.id;
+        if (action_type == 'i_will') $('action_query').innerHTML = "What will you do?";
+        if (action_type == 'i_walk') $('action_query').innerHTML = "Where will you walk?";
+        if (action_type == 'i_notice') $('action_query').innerHTML = "What do you notice, nearby?";
       },
 
       '#sort_nearby': function(a){
@@ -385,7 +416,7 @@ Fireball(F, {
 	      if (!sure) return;
          var actions = Fireball.latest('#actions...');
          Fireball('#actions').child(el.id).remove();
-         var count = Object.keys(actions).length;
+         var count = actions ? Object.keys(actions).length : 0;
          Fireball('#experience').update({ 'notice_count': count - 1 });
       },
 	  		   
