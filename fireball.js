@@ -198,7 +198,7 @@
 			project(value, el, domid);
 		}
 		if (on_update[domid]) on_update[domid](value);
-		refresh();
+		// refresh();
 	}
 
 
@@ -214,7 +214,7 @@
 			return;
 		}
 
-		if (typeof path == 'array'){
+		if (typeof path == 'object'){
 			filter_fns[domid] = path[1];
 			path = path[0];
 		}
@@ -287,6 +287,7 @@
 				if (el){
 					on_change[k](el);
 					ev.preventDefault();
+					refresh();
 					return false;
 				}
 			}

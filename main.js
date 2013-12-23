@@ -1,8 +1,8 @@
 var page = "home", searchq;
 var F = new Firebase("http://songwalks.firebaseio.com/");
 var current_sound, show_browse, page, show_compose, 
-	next_flip_time, sorted_actions;
-var curloc, show_pick_song;
+	next_flip_time, sorted_actions, sort, show_genres;
+var curloc, now_playing;
 
 function $(x){ return document.getElementById(x); }
 
@@ -91,9 +91,22 @@ function reflip(){
 Fireball(F, {
    map:{
       '#experience'  : '/pairings/$experience',
-      '#experiences...' : '/pairings',
+      '#experiences...' : ['/pairings', function(obj){
+        var data = [];
+        for (var k in obj) {
+          var exp = obj[k];
+          obj[k].id = k; 
+          if (sort != 'nearby' || distance(exp.start_loc[0], exp.start_loc[1], curloc[0], curloc[1]) < 5)
+            data.push(obj[k]);
+        }
+        return data.sort(function(a,b){ return (b.created_at||0) - (a.created_at||0); });
+      }],
       '#actions...'     : '/p2/actions/$experience',
       '#comments...'    : '/comments/$experience',
+
+      '#now_playing' : function(paint){
+        if (now_playing) paint({ title: now_playing.title });
+      },
 
       "#results...": function(paint) {
          if (!Fireball.changed('searchq')) return;
@@ -196,7 +209,9 @@ Fireball(F, {
 
       //   properties.author_name = form.author_name.value;
       //   properties.to_name = form.to_name.value;
-      '#search input': function(q){ searchq = q.value; }
+      '#search_input': function(q){
+        searchq = q.value;
+      }
    },
    
 
@@ -279,8 +294,9 @@ Fireball(F, {
    },
    
    show_when:{
-      '#pick_song': function(){ return show_pick_song; },
-      '#get_distance': function(){ return !curloc; },
+      '#genres': function(){ return show_genres; },
+      '#now_playing': function(){ return now_playing; },
+      '#pick_song': function(){ return searchq; },
       '#city': function(){ return !Fireball.get('$experience'); },
       '#experience': function(){ return Fireball.get('$experience'); },
 
@@ -303,27 +319,29 @@ Fireball(F, {
    },
 
    on_click: {
-   	"#results a .choose_song": function(b){
-   		var data = b.parentNode.parentNode.data;
-         show_pick_song = false;
-         navigator.geolocation.getCurrentPosition(function(pos){
-            curloc = [ pos.coords.latitude, pos.coords.longitude ];
-            var id = Fireball('#experiences').push({
-               'start_loc': curloc,
-               soundcloud_url: "/tracks/" + data.id,
-               soundcloud_id: data.id,
-               waveform_url: data.waveform_url,
-               song_title: data.title,
-               duration: data.duration / 1000
-            }).name();
-            Player.clear();
-            Fireball.set('$experience', id);
-         });
+   	"#sprout": function(b){
+       var data = now_playing;
+       navigator.geolocation.getCurrentPosition(function(pos){
+          curloc = [ pos.coords.latitude, pos.coords.longitude ];
+          var id = Fireball('#experiences').push({
+             'start_loc': curloc,
+             soundcloud_url: "/tracks/" + data.id,
+             soundcloud_id: data.id,
+             waveform_url: data.waveform_url,
+             song_title: data.title,
+             duration: data.duration / 1000,
+             created_at: (new Date()).getTime()
+          }).name();
+          Player.clear();
+          Fireball.set('$experience', id);
+       });
    	},
 
    	"#results a": function(a){
    		var data = a.data;
-         Player.stream('play', '/tracks/' + data.id);
+      now_playing = data;
+      searchq = null;
+      Player.stream('play', '/tracks/' + data.id);
    	},
 
 
@@ -342,15 +360,32 @@ Fireball(F, {
          Fireball.set('$experience', el.id);
       },
 
-      '#get_distance': function(){
-         navigator.geolocation.getCurrentPosition(function(pos){
-            curloc = [ pos.coords.latitude, pos.coords.longitude ];
-            Fireball.refresh('#experiences...');
-         });
+      '#show_genres': function(){
+        show_genres = !show_genres;
       },
 
-      '#new_experience': function(){
-         show_pick_song = true;
+      '#sort_latest': function(a){
+        var tabs = a.parentNode.childNodes;
+        for (var i = 0; i < tabs.length; i++) tabs[i].classList && tabs[i].classList.remove('active');
+        a.classList.add('active');
+        sort = 'latest';
+        Fireball.refresh('#experiences...');        
+      },
+
+      '#sort_nearby': function(a){
+        var tabs = a.parentNode.childNodes;
+        for (var i = 0; i < tabs.length; i++) tabs[i].classList && tabs[i].classList.remove('active');
+        a.classList.add('active');
+        if (curloc) {
+            sort = 'nearby';
+            Fireball.refresh('#experiences...');
+            return
+        }
+        navigator.geolocation.getCurrentPosition(function(pos){
+            curloc = [ pos.coords.latitude, pos.coords.longitude ];
+            sort = 'nearby';
+            Fireball.refresh('#experiences...');
+        });
       },
 
       "#browse": function(){ Fireball.set('$experience', null);  },

@@ -4,6 +4,10 @@ body{ margin:0; padding:0; position: relative; }
 header h1 { margin:0; text-align:center; font-size: 22px; display: inline; }
 header { background: #9f9; position: fixed; top: 0; width: 100%; text-align:center; height: 34px; }
 
+.tabs a.active {
+  color:black; font-weight: bold;
+}
+
 .experience_header {
   text-align: center;
   border: solid thin #ccc;

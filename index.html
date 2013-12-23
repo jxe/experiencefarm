@@ -18,23 +18,31 @@
 
 <div class="page" id="city">
    <header>
-      <a href="#" id="get_distance">Get Location</a>
-      <h1>The Latest</h1>
-      <a href="#" id="new_experience">Add</a>
+      <input id="search_input" placeholder="search for a song to play here" />
+      <a href="#" id="show_genres">Genres</a>
    </header>
    <div class="content">
-
+      <ul id="genres">
+         <li><a href="#">hiphop</a></li>
+      </ul>
       <div id="pick_song">
-         <form id="search"><input name="q" placeholder="search for a song to play here" /></form>
          <ul id="results">
             <a href="#"><li >
-               <span class="indicator">PLAY</span>
+               <span class="indicator">&rtri;</span>
                <span data-set="text:title">Song title</span>
-               <button class="choose_song">Choose</button>
             </li></a>
          </ul>
       </div>
 
+      <div id="now_playing">
+         <b data-set="text:title">Title</b>
+         <button id="sprout">Sprout</button>
+      </div>
+
+      <div style="text-align:center" class="tabs">
+         <a href="#" id="sort_latest">Latest</a> |
+         <a href="#" id="sort_nearby">Nearby</a>
+      </div>
 
       <ul id="experiences">
          <li>
