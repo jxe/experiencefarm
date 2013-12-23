@@ -421,7 +421,10 @@ Fireball(F, {
         });
       },
 
-      "#browse": function(){ Fireball.set('$experience', null);  },
+      "#browse": function(){
+        Fireball.set('$experience', null);
+        Player.clear();
+      },
       
       '#actions>a': function(el){
          var latest = Fireball.latest('#experience');
