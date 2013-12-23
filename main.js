@@ -402,6 +402,7 @@ Fireball(F, {
         if (action_type == 'i_will') $('add_sugg').setAttribute('placeholder', "What will you do?");
         if (action_type == 'i_walk') $('add_sugg').setAttribute('placeholder', "Where will you walk?");
         if (action_type == 'i_notice') $('add_sugg').setAttribute('placeholder', "What do you notice, nearby?");
+        $('add_sugg').focus();
       },
 
       '#sort_nearby': function(a){
@@ -433,6 +434,18 @@ Fireball(F, {
          Fireball('#experience').update({ 'notice_count': count - 1 });
       },
 	  	
+      "#edit":function(){
+         Fireball('#experience').update({ saved: false });
+      },
+      "#save":function(){
+         Fireball('#experience').update({ saved: true });
+      },
+     
+      "#delete":function(){
+         Fireball('#experience').remove();
+         Fireball.set("$experience", null);
+      },
+
       ".rewind": function(){
          if (Player.current.sound) Player.current.sound.setPosition(0);
          $('playhead').style.left=0;
@@ -452,18 +465,7 @@ Fireball(F, {
                pos.coords.latitude, pos.coords.longitude
             ]});
          });
-	   },
-      "#edit":function(){
-         Fireball('#experience').update({ saved: false });
-      },
-      "#save":function(){
-         Fireball('#experience').update({ saved: true });
-      },
-	   
-      "#delete":function(){
-         Fireball('#experience').remove();
-         Fireball.set("$experience", null);
-      }
+	   }
 	}
 	
 });
