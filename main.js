@@ -305,7 +305,7 @@ Fireball(F, {
 
       '#actions button': function(action){
         if (action.seen[sessionid]) return '';
-        return '<button>Me too</button>';
+        return '<a href="#">Me too</a>';
       },
 
       '#actions waveform_url': function(action){
@@ -448,8 +448,8 @@ Fireball(F, {
         Player.clear();
       },
       
-      '#actions>a>span>button': function(button){
-        var link = button.parentNode;
+      '#actions span a': function(button){
+        var link = button.parentNode.parentNode;
         var obj = {};
         obj[sessionid] = (new Date()).getTime();
         Fireball('#actions').child(link.id).child('seen').update(obj);
