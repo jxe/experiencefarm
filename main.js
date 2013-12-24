@@ -2,7 +2,7 @@ var page = "home", searchq;
 var F = new Firebase("http://songwalks.firebaseio.com/");
 var page, next_flip_time, sorted_actions, sort, show_genres, playlist, action_type;
 var curloc, now_playing;
-var sessionid = Math.random();
+var sessionid = Math.floor(Math.random()*100000000);
 
 function $(x){ return document.getElementById(x); }
 
