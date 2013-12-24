@@ -19,8 +19,12 @@
 
 <div class="page" id="city">
    <header>
-      <input id="search_input" placeholder="search for a song to play here" />
-      <a href="#" id="show_genres_button">Genres</a>
+      <a class="right" href="#" id="show_genres_button">Genres</a>
+      <div style="text-align:center" class="tabs">
+         <a href="#" class="active" id="sort_latest">Recent pairings</a>
+         <a href="#" id="sort_nearby">Nearby pairings</a>
+      </div>
+
    </header>
    <div class="content">
       <ul id="genres">
@@ -49,6 +53,7 @@
          </ul>
       </div>
 
+      <input id="search_input" placeholder="search for a song to play here" />
       <div id="now_playing_section">
          <div>
             Now playing:
@@ -56,14 +61,9 @@
          </div>
          <center>
             <a href="#" id="stop">&square;</a>
-            <button id="sprout">Pair song with my location</button>
+            <button id="sprout">Add this song</button>
             <a href="#" id="fast_forward">&rtri;&rtri;</a>
          </center>
-      </div>
-
-      <div style="text-align:center" class="tabs">
-         <a href="#" class="active" id="sort_latest">Recent pairings</a>
-         <a href="#" id="sort_nearby">Nearby pairings</a>
       </div>
 
       <ul id="experiences">

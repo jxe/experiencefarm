@@ -304,6 +304,7 @@ Fireball(F, {
    },
    
    show_when:{
+      '#search_input': function(){ return !now_playing; },
       '#genres': function(){ return show_genres; },
       '#now_playing_section': function(){ return now_playing; },
       '#pick_song': function(){ return searchq; },

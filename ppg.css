@@ -4,8 +4,17 @@ body{ margin:0; padding:0; position: relative; }
 header h1 { margin:0; text-align:center; font-size: 22px; display: inline; }
 header { background: #9f9; position: fixed; top: 0; width: 100%; text-align:center; height: 34px; }
 
+header .tabs { 
+  display:inline-block;
+  font-size: 14px;
+  padding: 6px 3px;
+}
+
+header .tabs a {
+  padding: 5px 6px;
+}
+
 #search_input {
-  float:left;
   margin-left:5px;
   font-size:18px;
 }
@@ -19,7 +28,12 @@ header { background: #9f9; position: fixed; top: 0; width: 100%; text-align:cent
   background: #ddd;
 }
 
-header a {
+header > a.right:first-child {
+  float:right;
+  position: static;
+}
+
+header > a {
   background:rgb(84, 82, 59);
   text-decoration: none;
   border-radius: 5px;
@@ -43,6 +57,7 @@ header a {
   background: black;
   color:white;
   padding: 10px;
+  margin:10px;
 }
 
 
@@ -135,8 +150,8 @@ ul li{
 
 /*header a:last-child { float: right; }
 header a:first-child { float: left; } */
-header a:last-child { position: absolute; right: 5px; left: auto; }
-header a:first-child { position: absolute; left: 5px; right: auto; }
+header > a:last-child { position: absolute; right: 5px; left: auto; }
+header > a:first-child { position: absolute; left: 5px; right: auto; }
 
 #play {
   font-size: 30px;
