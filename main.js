@@ -9,6 +9,17 @@ function $(x){ return document.getElementById(x); }
 if (navigator.standalone) document.getElementsByTagName('body')[0].className = 'standalone';
 
 
+function with_loc(f){
+  navigator.geolocation.getCurrentPosition(
+    f, function(err) {
+      console.warn('ERROR(' + err.code + '): ' + err.message);
+    }, {
+      timeout: 10*1000,
+      maximumAge: 1000*60*20
+    }
+  );
+}
+
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -137,10 +148,16 @@ Fireball(F, {
    on_update:{
       '#actions...': function(v){
          var actions = [];
-         for (var k in v){ v[k].id = k; actions.push(v[k]); }
+         var not_by_me;
+         for (var k in v){
+           v[k].id = k; 
+           actions.push(v[k]);
+           if (v[k].seen && !v[k].seen[sessionid]) not_by_me = true;
+         }
          sorted_actions = actions.sort(function(a,b){ return a.t - b.t; });
          next_flip_time = null;
          reflip();
+         if (not_by_me) beep();
       },
 
       '#experience': function(v){
@@ -205,11 +222,13 @@ Fireball(F, {
 
       '#add_sugg': function(input){
          var actions = Fireball.latest('#actions...');
+         var seen = {};
+         seen[sessionid] = (new Date()).getTime();
          Fireball('#actions').push({
             t: Player.current.sound.position / 1000,
             type: action_type || "i_notice",
             text: input.value,
-            seen: [sessionid]
+            seen: seen
          });
          var count = actions ? Object.keys(actions).length : 0;
          Fireball('#experience').update({ 'notice_count': count + 1 });
@@ -284,6 +303,11 @@ Fireball(F, {
          }
       },
 
+      '#actions button': function(action){
+        if (action.seen[sessionid]) return '';
+        return '<button>Me too</button>';
+      },
+
       '#actions waveform_url': function(action){
          var l = Fireball.latest('#experience'); 
          return l && l.waveform_url;
@@ -330,9 +354,6 @@ Fireball(F, {
    },
 
    on_click: {
-    '.me_too': function(a){
-      // a.path
-    },
 
     "#genres a": function(a){
       var genre = a.innerHTML;
@@ -348,7 +369,7 @@ Fireball(F, {
     '#fast_forward': function(){ nextSong(); },
    	"#sprout": function(b){
        var data = now_playing;
-       navigator.geolocation.getCurrentPosition(function(pos){
+       with_loc(function(pos){
           curloc = [ pos.coords.latitude, pos.coords.longitude ];
           var id = Fireball('#experiences').push({
              'start_loc': curloc,
@@ -415,7 +436,7 @@ Fireball(F, {
             Fireball.refresh('#experiences...');
             return
         }
-        navigator.geolocation.getCurrentPosition(function(pos){
+        with_loc(function(pos){
             curloc = [ pos.coords.latitude, pos.coords.longitude ];
             sort = 'nearby';
             Fireball.refresh('#experiences...');
@@ -427,11 +448,18 @@ Fireball(F, {
         Player.clear();
       },
       
+      '#actions>a>button': function(button){
+        var link = button.parentNode;
+        var obj = {};
+        obj[sessionid] = (new Date()).getTime();
+        Fireball('#actions').child(link.id).child('seen').update(obj);
+      },
+
       '#actions>a': function(el){
          var latest = Fireball.latest('#experience');
          if (latest && latest.saved) return;
          var sure = confirm("Do you want to delete this instruction?");
-	      if (!sure) return;
+	       if (!sure) return;
          var actions = Fireball.latest('#actions...');
          Fireball('#actions').child(el.id).remove();
          var count = actions ? Object.keys(actions).length : 0;
@@ -464,7 +492,7 @@ Fireball(F, {
          var latest = Fireball.latest('#experience');
          if (latest && latest.saved) return;
          if (!confirm('Update map?')) return;
-         navigator.geolocation.getCurrentPosition(function(pos){
+         with_loc(function(pos){
             Fireball('#experience').update({ 'start_loc': [
                pos.coords.latitude, pos.coords.longitude
             ]});

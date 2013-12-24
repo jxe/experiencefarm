@@ -1,57 +1,15 @@
-Simple Firemapper test
+Pairings
+	- TEST: "Me too!" button on notices from another person
 
-
-- "Me too!" button on notices from another person
-- update notices count on experience during add/delete
-- replace comment button with comment textfield
-- put share below it
-
-- complete feed page
-	- tab on feed that's like "all | nearby"
-	- combine all cities into one stream
+Soon
+	- fix topbar layout to look like Ratchet / ios7
+	- truck playheads together
+	- Truck Genre playlists together for friends who are close and want to
 	- "You can't play this, it's too far away"
-	- support limiting experiences on homescreen to those nearby
-	- kill choose city screen
-	- display hidden notices count on homescreen
-
 
 Later
+	- gear menu for playing a song that's too far away, etc
 	- infinite scrolling for feed page... just loads 100 initially
-
-
-
-
-
-
-
-- if two players, actions need to be accepted
-- beep on new action from other player
-
-- action poster has little arrow and popover to select action type
-
-
-
-
-
-http://getbootstrap.com/examples/starter-template/
-
-
-DB.nearest_city()
-
-DB.experiences_in_city(city)
-DB.locations_in_city(city)
-DB.songs()
-DB.play_experience('my_name', player)
-DB.record_experience(city, start_loc, song, 'my_name', recorder)
-DB::Recording.pause()
-DB::Recording.resume()
-DB::Recording.suggest()
-DB::Recording.accept()
-
-Player.on_paused()
-Player.on_played()
-Player.configure()
-
-Recorder.configure()
-Recorder.on_suggested()
-
+	- use song duration not sound duration
+	- loading indicator after you load a genre
+	- FIX: beeps on new action from me, after new action from other player
