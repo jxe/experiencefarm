@@ -448,7 +448,7 @@ Fireball(F, {
         Player.clear();
       },
       
-      '#actions>a>button': function(button){
+      '#actions>a>span>button': function(button){
         var link = button.parentNode;
         var obj = {};
         obj[sessionid] = (new Date()).getTime();
