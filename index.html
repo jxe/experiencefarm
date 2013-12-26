@@ -19,11 +19,7 @@
 
 <div class="page" id="city">
    <header>
-      <a class="right" href="#" id="show_genres_button">Genres</a>
-      <div style="text-align:center" class="tabs">
-         <a href="#" class="active" id="sort_latest">Recent pairings</a>
-         <a href="#" id="sort_nearby">Nearby pairings</a>
-      </div>
+      <a class="right" href="#" id="show_genres_button">&#9662; Browse stations</a>
 
    </header>
    <div class="content">
@@ -60,36 +56,46 @@
          </ul>
       </div>
 
-      <input id="search_input" placeholder="search for a song to play here" />
+      <div style="text-align:center">
+         <input type="search" id="search_input" placeholder="or search to add a song" />
+      </div>
+
+      <div style="text-align:center" class="quiet tabs">
+         <a href="#" class="active" id="sort_latest">Recent pairings</a>
+         <a href="#" id="sort_nearby">Nearby pairings</a>
+      </div>
+
+
       <div id="now_playing_section">
+         <a href="#" id="stop" style="position:absolute; top:2; right:5">X</a>
+         <div style="font-size:11px; color: #444; font-style:italic;">Now playing</div>
          <div>
-            Now playing:
+            
             <b data-set="text:title">Title</b>
          </div>
-         <center>
-            <a href="#" id="stop">&square;</a>
-            <button id="sprout">Add this song</button>
-            <a href="#" id="fast_forward">&rtri;&rtri;</a>
+         <center style="position:relative;">
+            <button id="sprout">Make a pairing</button>
+            <a style="position:absolute; right: 5px; top:10px" href="#" id="fast_forward">&#9654;&#9654;</a>
          </center>
       </div>
 
       <ul id="experiences">
          <li>
+            <div class="experience_post">
+               <span class="notices_count" data-set="text:expnotices"></span>
+               <span data-set="text:expdist">Near enough</span>
+            </div>
             <div class="experience_header" data-set="style:expstyle">
                <a href="#">
                   <div class="title">
                      <b data-set="text:song_title"></b> @ 
                      <b data-set="text:placename"></b>
                   </div>
-                  <div data-set="text:expdist">
-                     Near enough
-                  </div>
                   <div>
                      <img src="play.png" style="max-width:50px">
                   </div>
                </a>
             </div>
-            <div class="notices_count" data-set="text:expnotices"></div>
          </li>
       </ul>
    </div>

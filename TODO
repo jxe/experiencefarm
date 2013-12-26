@@ -1,6 +1,13 @@
 Pairings
-	- TEST: "Me too!" button on notices from another person
 
+* ON THE BUS / TRAIN: playhead sync! - rewind/play/pause affects both players
+   * On play set value that starts countdown
+   * Start countdown fn that takes loc and date time and div to put countdown in
+   * On pause, set seek loc, same w rewind
+   * Player#pause_at(t0)
+   * Player#stream(start_time, t0, indicator, track)
+   * (20m) confirm rewind
+   
 Soon
 	- fix topbar layout to look like Ratchet / ios7
 	- truck playheads together

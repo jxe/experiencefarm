@@ -247,7 +247,7 @@ Fireball(F, {
    calculated_fields:{
 
       "#experiences expnotices": function(exp){
-         if (exp.notice_count) return "has " + exp.notice_count + " hidden notices";
+         if (exp.notice_count) return "Someone noticed " + exp.notice_count + " things here ";
          else return "";
       },
       "#experience googlemap": function(exp){
@@ -278,9 +278,9 @@ Fireball(F, {
          if (!curloc) return "";
          var km = distance(exp.start_loc[0], exp.start_loc[1], curloc[0], curloc[1]);
          if (km < 1){
-            return "close enough to play!"
+            return "and it's <b>close enough to play</b>!"
          } else {
-            return km + " km away...";
+            return "and it's <b>" + Math.floor(km) + " km</b> away...";
          }
       },
       
@@ -304,7 +304,11 @@ Fireball(F, {
       },
 
       '#actions button': function(action){
-        if (action.seen[sessionid]) return '';
+        if (action.seen[sessionid]){
+          var seen_by_count = Object.keys(action.seen).length;
+          if (seen_by_count == 1) return '';
+          return "<i>them too!</i>"; // + (seen_by_count - 1)
+        }
         return '<a href="#">Me too</a>';
       },
 
