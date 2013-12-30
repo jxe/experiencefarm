@@ -478,6 +478,8 @@ Fireball(F, {
       },
      
       "#delete":function(){
+         var sure = confirm("Do you want to delete this soundtrack?");
+         if (!sure) return;
          Fireball('#experience').remove();
          Fireball.set("$experience", null);
       },

@@ -64,6 +64,10 @@ header > a {
   color:white;  
 }
 
+.header > a.less_prominent {
+  background: none;
+}
+
 .tabs a {
   padding:5px 10px;
   border-radius:5px;  
