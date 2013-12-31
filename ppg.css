@@ -297,6 +297,20 @@ form input {
    font-size:20px;
    padding:3px 7px
 }
+
+#compose_experience input {
+  text-align: center;
+}
+
+#compose_experience.missing {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+#compose_experience.missing input {
+  border: auto;
+}
+
 #add_action {
    position: fixed;
    bottom: 0;

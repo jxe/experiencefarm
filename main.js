@@ -260,6 +260,11 @@ Fireball(F, {
          return "<img src='"+mapUrl+"'>";
       },
 
+      "#experience placenameform_class": function(exp){
+        if (exp.placename) return "present";
+        else return "missing";
+      },
+
       "#experience expstyle": function(exp){
          if (!exp.start_loc) return "";
          var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=";
