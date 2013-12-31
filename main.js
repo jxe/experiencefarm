@@ -13,9 +13,11 @@ function with_loc(f){
   navigator.geolocation.getCurrentPosition(
     f, function(err) {
       console.warn('ERROR(' + err.code + '): ' + err.message);
+      alert('Unable to get your location.  Currently this is required.');
     }, {
       timeout: 10*1000,
-      maximumAge: 1000*60*20
+      maximumAge: 1000*60*10,
+      enableHighAccuracy: true
     }
   );
 }
