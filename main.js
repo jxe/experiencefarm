@@ -311,7 +311,7 @@ Fireball(F, {
           if (seen_by_count == 1) return '';
           return "<i>them too!</i>"; // + (seen_by_count - 1)
         }
-        return '<a href="#">Me too</a>';
+        return '<button>Me too</button>';
       },
 
       '#actions waveform_url': function(action){
@@ -454,7 +454,7 @@ Fireball(F, {
         Player.clear();
       },
       
-      '#actions span a': function(button){
+      '#actions span button': function(button){
         var link = button.parentNode.parentNode;
         var obj = {};
         obj[sessionid] = (new Date()).getTime();
