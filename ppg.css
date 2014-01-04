@@ -6,8 +6,12 @@ header {
   background: #9f9; position: fixed; top: 0; width: 100%; text-align:center; height: 34px; 
 line-height: 1.9em;
 color: white;
-text-shadow: black 0px -1px 1px;
-font-style: italic;
+text-shadow: rgba(0, 0, 0, 0.41) 0px -1px 1px;
+}
+
+#city header {
+  text-align: left;
+  padding-left: 10px;
 }
 
 a { text-decoration: none; color: black; }
@@ -188,10 +192,8 @@ header {
    /*-webkit-filter: blur(8px);*/
    z-index: 10;
    /*background: repeat-x bottom left url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect fill='#ff0000' x='0' y='0' width='1' height='0.5'/></svg>");*/
-
-
-  background: -webkit-linear-gradient(90deg, #BE0303, #be0344 0.88%, rgba(211, 8, 8, 0.91) 0.881%, #721919);
-border-bottom: 1px solid black;
+  background: -webkit-linear-gradient(90deg, #3F0606, #3A0B1B 0.88%, rgba(231, 22, 22, 0.44) 0.881%, rgba(241, 3, 3, 0.72));
+  border-bottom: 1px solid rgb(146, 141, 141);
 }
 
 
