@@ -11,7 +11,11 @@ if (navigator.standalone) document.getElementsByTagName('body')[0].className = '
 
 function with_loc(f){
   navigator.geolocation.getCurrentPosition(
-    f, function(err) {
+    function(pos){
+      curloc = [ pos.coords.latitude, pos.coords.longitude ];
+      store_loc();
+      f(pos);
+    }, function(err) {
       console.warn('ERROR(' + err.code + '): ' + err.message);
       alert('Unable to get your location.  Currently this is required.');
     }, {
@@ -49,6 +53,28 @@ function distance(lat1,lon1,lat2,lon2) {
 function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
+
+
+function store_loc(){
+  if (curloc){
+    var now = (new Date()).getTime();
+    localStorage['loc'] = JSON.stringify({ loc: curloc, at: now });
+  }
+}
+
+function restore_loc(){
+  var data;
+  if (data = localStorage['loc']){
+    data = JSON.parse(data);
+    var now = (new Date()).getTime();
+    if (now - data.at < 1000*60*6){
+      curloc = data.loc;
+    }
+  }
+}
+
+
+restore_loc();
 
 var Player = {
 
@@ -249,15 +275,18 @@ Fireball(F, {
    calculated_fields:{
 
       "#experiences expnotices": function(exp){
-         if (exp.notice_count) return "Someone noticed " + exp.notice_count + " things here ";
+         var dist = "";
+         if (curloc && exp.start_loc) {
+           var km = distance(exp.start_loc[0], exp.start_loc[1], curloc[0], curloc[1]);
+           if (km < 1){
+              dist = "<b>close enough to play</b>!"
+           } else {
+              dist = "<b>" + Math.floor(km) + " km</b> away";
+           }
+         }
+
+         if (exp.notice_count) return "Tracks were left "+ dist + " by someone listening to <b>" + exp.song_title + "</b> at <b>" + (exp.placename||"Unknown Location") + "</b>";
          else return "";
-      },
-      "#experience googlemap": function(exp){
-         if (!exp.start_loc) return "<a href='#' id='geolocate'>Geolocate!</a>";
-         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=";
-         mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
-         mapUrl = mapUrl + '&zoom=16&size=320x100&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
-         return "<img src='"+mapUrl+"'>";
       },
 
       "#experience placenameform_class": function(exp){
@@ -265,31 +294,14 @@ Fireball(F, {
         else return "missing";
       },
 
-      "#experience expstyle": function(exp){
-         if (!exp.start_loc) return "";
-         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=";
-         mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
-         mapUrl = mapUrl + '&zoom=16&size=320x200&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
-         return "background-image: url(" + mapUrl + ");";
-      },
-
       "#experiences expstyle": function(exp){
          if (!exp.start_loc) return "";
-         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=";
+         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
          mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
-         mapUrl = mapUrl + '&zoom=16&size=320x200&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
+         mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
          return "background-image: url(" + mapUrl + ");";
       },
 
-      "#experiences expdist": function(exp){
-         if (!curloc) return "";
-         var km = distance(exp.start_loc[0], exp.start_loc[1], curloc[0], curloc[1]);
-         if (km < 1){
-            return "and it's <b>close enough to play</b>!"
-         } else {
-            return "and it's <b>" + Math.floor(km) + " km</b> away...";
-         }
-      },
       
       "#experiences calctitle": function(exp){
          // TODO: make from start loc name and song name and authors
@@ -339,8 +351,11 @@ Fireball(F, {
    },
    
    show_when:{
+      '.hasloc': function(){ return curloc; },
+      '.noloc': function(){ return !curloc; },
       '#search_input': function(){ return !now_playing; },
       '#genres': function(){ return show_genres; },
+      '#listen_solo': function(){ return curloc && !now_playing; },
       '#now_playing_section': function(){ return now_playing; },
       '#pick_song': function(){ return searchq; },
       '#city': function(){ return !Fireball.get('$experience'); },
@@ -381,7 +396,6 @@ Fireball(F, {
    	"#sprout": function(b){
        var data = now_playing;
        with_loc(function(pos){
-          curloc = [ pos.coords.latitude, pos.coords.longitude ];
           var id = Fireball('#experiences').push({
              'start_loc': curloc,
              soundcloud_url: "/tracks/" + data.id,
@@ -448,7 +462,6 @@ Fireball(F, {
             return
         }
         with_loc(function(pos){
-            curloc = [ pos.coords.latitude, pos.coords.longitude ];
             sort = 'nearby';
             Fireball.refresh('#experiences...');
         });

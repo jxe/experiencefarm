@@ -19,11 +19,25 @@
 
 <div class="page" id="city">
    <header>
-      <a class="right" href="#" id="show_genres_button">&#9662; Browse stations</a>
-
+      Listen Together
    </header>
    <div class="content">
+
+      <div class="noloc" style="text-align:center; margin-top:20px;">
+         <button id="sort_nearby">Find nearby people, experiences, songs</button>
+      </div>
+
+      <div id="listen_solo">
+         <h2>no one nearby</h2>
+         <div style="text-align:center">
+            <button id="show_genres_button">Listen solo &#9662;</button>
+         </div>
+      </div>
+
       <ul id="genres">
+         <div style="text-align:center">
+            <input type="search" id="search_input" placeholder="search for a song" />
+         </div>
          <li><a href="#">80s</a></li>
          <li><a href="#">ambient</a></li>
          <li><a href="#">americana</a></li>
@@ -56,15 +70,6 @@
          </ul>
       </div>
 
-      <div style="text-align:center">
-         <input type="search" id="search_input" placeholder="or search to add a song" />
-      </div>
-
-      <div style="text-align:center" class="quiet tabs">
-         <a href="#" class="active" id="sort_latest">Recent pairings</a>
-         <a href="#" id="sort_nearby">Nearby pairings</a>
-      </div>
-
 
       <div id="now_playing_section">
          <a href="#" id="stop" style="position:absolute; top:2; right:5">X</a>
@@ -74,28 +79,22 @@
             <b data-set="text:title">Title</b>
          </div>
          <center style="position:relative;">
-            <button id="sprout">Make a soundtrack</button>
+            <button id="sprout">Make tracks</button>
             <a style="position:absolute; right: 5px; top:10px" href="#" id="fast_forward">&#9654;&#9654;</a>
          </center>
       </div>
 
-      <ul id="experiences">
+      <h2 class="hasloc">
+         or, listen with those here before you
+      </h2>
+
+      <ul class="hasloc" id="experiences">
          <li>
             <div class="experience_post">
+               <img src="track.png"/>
                <span class="notices_count" data-set="text:expnotices"></span>
-               <span data-set="text:expdist">Near enough</span>
             </div>
-            <div class="experience_header" data-set="style:expstyle">
-               <a href="#">
-                  <div class="title">
-                     <b data-set="text:song_title"></b> @ 
-                     <b data-set="text:placename"></b>
-                  </div>
-                  <div>
-                     <img src="play.png" style="max-width:50px">
-                  </div>
-               </a>
-            </div>
+            <div class="experience_header" data-set="style:expstyle"></div>
          </li>
       </ul>
    </div>
