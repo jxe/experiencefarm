@@ -5,6 +5,13 @@ var curloc, now_playing;
 var sessionid = Math.floor(Math.random()*100000000);
 
 function $(x){ return document.getElementById(x); }
+function values(obj){ return Object.keys(obj).map(function(x){ return obj[x]; }); }
+function conjoin(components){
+  if (components.length == 0) return "";
+  if (components.length == 1) return components[0];
+  if (components.length == 2) return components[0] + " and " + components[1];
+  return components.slice(0,-1).join(', ') + ", and " + components[components.length - 1];
+}
 
 if (navigator.standalone) document.getElementsByTagName('body')[0].className = 'standalone';
 
@@ -113,7 +120,7 @@ var Player = {
 function nextSong(){
   if (!playlist || playlist.errors || playlist.length == 0) return;
   now_playing = playlist.pop();
-  Player.stream('play', '/tracks/' + now_playing.id, null, { onfinished: nextSong });
+  Player.stream('play', '/tracks/' + now_playing.id, null, { onfinish: nextSong });
   Fireball.refresh();
 }
 
@@ -204,6 +211,10 @@ Fireball(F, {
 
          $('play').innerHTML = "&#8230;";
          Player.stream('load', v.soundcloud_url, $('play'), {
+            onfinish: function(){
+              var feeling = prompt('How did it feel to listen?');
+              if (feeling) Fireball('#experience').child('feelings').push(feeling);
+            },
             whileplaying: function(){
                  var s = Player.current.sound.position / 1000;
                  var percent = Player.current.sound.position / Player.current.sound.duration;
@@ -279,14 +290,20 @@ Fireball(F, {
          if (curloc && exp.start_loc) {
            var km = distance(exp.start_loc[0], exp.start_loc[1], curloc[0], curloc[1]);
            if (km < 1){
-              dist = "<b>close enough to play</b>!"
+              dist = "<b>close to your location</b>"
            } else {
               dist = "<b>" + Math.floor(km) + " km</b> away";
            }
          }
+         var components = ["Someone "+dist];
 
-         if (exp.notice_count) return "Tracks were left "+ dist + " by someone listening to <b>" + exp.song_title + "</b> at <b>" + (exp.placename||"Unknown Location") + "</b>";
-         else return "";
+         if (exp.feelings) components[0] += (" felt <b>" + values(exp.feelings).join(', ') +"</b> while listening to <b>" + exp.song_title +"</b>");
+         else if (exp.song_title) components[0] += (" listened to <b>"+exp.song_title+"</b>");
+
+         if (exp.notice_count) components.push("noticed <b>" + exp.notice_count + "</b> things");
+         var msg = conjoin(components);
+         if (exp.placename) msg += " at <b>" + exp.placename + "</b>";
+         return msg;
       },
 
       "#experience placenameform_class": function(exp){
@@ -295,6 +312,14 @@ Fireball(F, {
       },
 
       "#experiences expstyle": function(exp){
+         if (!exp.start_loc) return "";
+         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
+         mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
+         mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
+         return "background-image: url(" + mapUrl + ");";
+      },
+
+      "#experience expstyle": function(exp){
          if (!exp.start_loc) return "";
          var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
          mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
@@ -463,6 +488,7 @@ Fireball(F, {
         }
         with_loc(function(pos){
             sort = 'nearby';
+            Fireball.refresh();
             Fireball.refresh('#experiences...');
         });
       },
