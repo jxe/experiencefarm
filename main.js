@@ -211,10 +211,6 @@ Fireball(F, {
 
          $('play').innerHTML = "&#8230;";
          Player.stream('load', v.soundcloud_url, $('play'), {
-            onfinish: function(){
-              var feeling = prompt('How did it feel to listen?');
-              if (feeling) Fireball('#experience').child('feelings').push(feeling);
-            },
             whileplaying: function(){
                  var s = Player.current.sound.position / 1000;
                  var percent = Player.current.sound.position / Player.current.sound.duration;
@@ -269,6 +265,11 @@ Fireball(F, {
             text: input.value,
             seen: seen
          });
+
+         if (action_type == 'i_feel'){
+            Fireball('#experience').child('feelings').push(text);
+         }
+
          var count = actions ? Object.keys(actions).length : 0;
          Fireball('#experience').update({ 'notice_count': count + 1 });
          input.value = '';
@@ -474,6 +475,7 @@ Fireball(F, {
         if (action_type == 'i_will') $('add_sugg').setAttribute('placeholder', "What will you do?");
         if (action_type == 'i_walk') $('add_sugg').setAttribute('placeholder', "Where will you walk?");
         if (action_type == 'i_notice') $('add_sugg').setAttribute('placeholder', "What do you notice, nearby?");
+        if (action_type == 'i_feel') $('add_sugg').setAttribute('placeholder', "What do you feel?");
         $('add_sugg').focus();
       },
 
