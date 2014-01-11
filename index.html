@@ -15,8 +15,6 @@
 
 
 
-
-
 <div class="page" id="city">
    <header>
       Flashmob Radio
@@ -67,16 +65,6 @@
          </ul>
       </div>
 
-      <div id="now_playing_section">
-         <a href="#" id="stop" style="position:absolute; top:2; right:5">X</a>
-         <div style="font-size:11px; color: #444; font-style:italic;">Now playing</div>
-         <div> <b data-set="text:title">Title</b> </div>
-         <center style="position:relative;">
-            <button id="sprout">Make tracks</button>
-            <a style="position:absolute; right: 5px; top:10px" href="#" id="fast_forward">&#9654;&#9654;</a>
-         </center>
-      </div>
-
       <ul class="hasloc" id="experiences">
          <li>
             <div class="experience_post">
@@ -91,39 +79,24 @@
 
 
 <div id="experience" >
-
-   <header class="notsaved rewind" id="edit_header">
-      <a href="#" class="hassong" id="save">save</a>
-      <h1>Make Soundprint</h1>
-      <a href="#" class="less_prominent" id="delete">delete</a>
-   </header>
-   <header class="saved rewind" id="play_header">
-      <a href="#" id="browse">other soundprints</a>
-      <a href="#" id="edit">edit</a>
-   </header>
+   <header><a href="#" id="browse">back</a></header>
 
    <div class="content">
+      <a href="#" id="stop" style="position:absolute; top:2; right:5">X</a>
       You're listening to <b data-set="text:song_title"></b>.
       <div class="experience_header hassong" data-set="style:expstyle" id="map_clicked">
-
-         <div class="title">
-            <b data-set="text:placename"></b>
-         </div>
-         <div data-set="text:expdist">
-            Near enough
-         </div>
+         <b class="title" data-set="text:placename"></b>
          <div>
             <a class="hassong rewind" href="#">&ltri;&ltri;</a>
             <a class="hassong" id="play" href="#">&#9654;</a>
+            <a href="#" id="fast_forward">&#9654;&#9654;</a>
          </div>
       </div>
-
       <div class="notsaved" id="header">
          <form data-set="class:placenameform_class" id="compose_experience">
             <input id="placename" name="placename" data-set="value:placename" placeholder="Name this location!">
          </form>
       </div>
-
 
       <div id="timeline" class="hassong">
          <div id="playhead"></div>

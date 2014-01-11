@@ -12,6 +12,9 @@ function conjoin(components){
   if (components.length == 2) return components[0] + " and " + components[1];
   return components.slice(0,-1).join(', ') + ", and " + components[components.length - 1];
 }
+function more_than_30m_ago(ts){
+  return (new Date().getTime()) - ts > 30*60*1000;
+}
 
 if (navigator.standalone) document.getElementsByTagName('body')[0].className = 'standalone';
 
@@ -119,9 +122,28 @@ var Player = {
 
 function nextSong(){
   if (!playlist || playlist.errors || playlist.length == 0) return;
-  now_playing = playlist.pop();
-  Player.stream('play', '/tracks/' + now_playing.id, null, { onfinish: nextSong });
-  Fireball.refresh();
+  var data = now_playing = playlist.pop();
+  var song_info = {
+     'start_loc': curloc,
+     soundcloud_url: "/tracks/" + data.id,
+     soundcloud_id: data.id,
+     waveform_url: data.waveform_url,
+     song_title: data.title,
+     duration: data.duration / 1000,
+     created_at: (new Date()).getTime()    
+  };
+  var current_experience = Fireball.latest('#experience');
+  if (!current_experience) {
+    var id = Fireball('#experiences').push(song_info).name();
+    Player.clear();
+    Fireball.set('$experience', id);
+    Fireball.refresh();
+  } else if (!current_experience.notice_count && !current_experience.placename) {
+    Fireball('#experience').update(song_info);
+  } else {
+    Fireball.set('$experience', null);
+    Player.clear();
+  }
 }
 
 function reflip(){
@@ -198,14 +220,13 @@ Fireball(F, {
       '#experience': function(v){
          searchq = null; 
 
-         if (!v || !v.saved) $('experience').className = 'editing';
-         else $('experience').className = 'playing';
-
          if (!v){
             $('playhead').style.left = 0;
             return Fireball.refresh();
          }
                         
+         if (!more_than_30m_ago(v.created_at)) $('experience').className = 'editing';
+         else $('experience').className = 'playing';
          if (!v.soundcloud_url) return Fireball.refresh();
          if (Player.current.track == v.soundcloud_url) return Fireball.refresh();
 
@@ -381,19 +402,19 @@ Fireball(F, {
       '.noloc': function(){ return !curloc; },
       '#search_input': function(){ return !now_playing; },
       '#genres': function(){ return show_genres; },
-      '#listen_solo': function(){ return curloc && !now_playing; },
+      '#listen_solo': function(){ return curloc; },
       '#now_playing_section': function(){ return now_playing; },
       '#pick_song': function(){ return searchq; },
       '#city': function(){ return !Fireball.get('$experience'); },
       '#experience': function(){ return Fireball.get('$experience'); },
 
       '.saved': function(){
-         var latest = Fireball.latest('#experience');
-         return latest && latest.saved; 
+         var exp = Fireball.latest('#experience');
+         return exp && more_than_30m_ago(exp.created_at);
       },
       '.notsaved': function(){
-         var latest = Fireball.latest('#experience');
-         return latest && !latest.saved; 
+         var exp = Fireball.latest('#experience');
+         return exp && !more_than_30m_ago(Fireball.latest('#experience').created_at);
       },
       '.hassong': function(){
          var latest = Fireball.latest('#experience');
@@ -496,6 +517,10 @@ Fireball(F, {
       },
 
       "#browse": function(){
+        var current_experience = Fireball.latest('#experience');
+        if (current_experience && !current_experience.placename && !current_experience.notice_count){
+           Fireball('#experience').remove();
+        }
         Fireball.set('$experience', null);
         Player.clear();
       },
@@ -508,8 +533,7 @@ Fireball(F, {
       },
 
       '#actions>a': function(el){
-         var latest = Fireball.latest('#experience');
-         if (latest && latest.saved) return;
+         if (more_than_30m_ago(Fireball.latest('#experience').created_at)) return;
          var sure = confirm("Do you want to delete this instruction?");
 	       if (!sure) return;
          var actions = Fireball.latest('#actions...');
@@ -517,14 +541,7 @@ Fireball(F, {
          var count = actions ? Object.keys(actions).length : 0;
          Fireball('#experience').update({ 'notice_count': count - 1 });
       },
-	  	
-      "#edit":function(){
-         Fireball('#experience').update({ saved: false });
-      },
-      "#save":function(){
-         Fireball('#experience').update({ saved: true });
-      },
-     
+	  	     
       "#delete":function(){
          var sure = confirm("Do you want to delete this soundtrack?");
          if (!sure) return;
@@ -543,8 +560,7 @@ Fireball(F, {
       },
 
       '#map_clicked':function(){
-         var latest = Fireball.latest('#experience');
-         if (latest && latest.saved) return;
+         if (more_than_30m_ago(Fireball.latest('#experience').created_at)) return;
          if (!confirm('Update map?')) return;
          with_loc(function(pos){
             Fireball('#experience').update({ 'start_loc': [
