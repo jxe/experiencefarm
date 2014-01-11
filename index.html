@@ -23,8 +23,8 @@
    </header>
    <div class="content">
 
-      <div id="listen_solo" style="text-align:center">
-         <button id="show_genres_button">Listen solo &#9662;</button>
+      <div id="listen_solo" style="text-align:center; margin-top:10px">
+         <a href="#" style="color:blue; " id="show_genres_button">+ add a song</a>
       </div>
 
       <div class="noloc" style="text-align:center; margin-top:20px;">
@@ -70,10 +70,7 @@
       <div id="now_playing_section">
          <a href="#" id="stop" style="position:absolute; top:2; right:5">X</a>
          <div style="font-size:11px; color: #444; font-style:italic;">Now playing</div>
-         <div>
-            
-            <b data-set="text:title">Title</b>
-         </div>
+         <div> <b data-set="text:title">Title</b> </div>
          <center style="position:relative;">
             <button id="sprout">Make tracks</button>
             <a style="position:absolute; right: 5px; top:10px" href="#" id="fast_forward">&#9654;&#9654;</a>
@@ -106,10 +103,10 @@
    </header>
 
    <div class="content">
-
+      You're listening to <b data-set="text:song_title"></b>.
       <div class="experience_header hassong" data-set="style:expstyle" id="map_clicked">
+
          <div class="title">
-            <b data-set="text:song_title"></b> @ 
             <b data-set="text:placename"></b>
          </div>
          <div data-set="text:expdist">
@@ -139,15 +136,16 @@
                <span data-set="text:#actions:button"></span>
             </a>
          </div>
-         <form class="fake_action notsaved">
-            <div class="tabs">
-               <a id="i_notice" class="active" href="#">I notice</a>
-               <a id="i_will" href="#">I will</a>
-               <a id="i_walk" href="#">I'll walk</a>
-            </div>
-            <input id="add_sugg" placeholder="What do you notice, nearby?">
-         </form>
       </div>
+
+      <form class="fake_action notsaved">
+         <input id="add_sugg" placeholder="What do you notice, nearby?">
+         <div class="tabs">
+            <a id="i_notice" class="active" href="#">I notice</a>
+            <a id="i_will" href="#">I will</a>
+            <a id="i_walk" href="#">I'll walk</a>
+         </div>
+      </form>
 
       <div class="saved" id="comment_section">
          <button id="share">Share</button>
