@@ -291,6 +291,9 @@ p { margin:0; padding: 5px 10px; background: #ddd; }
   height: 30px;
 }
 
+.playing #actions>a>span>button { display: none; }
+.playing #actions>a.show>span>button { display: inline; }
+
 .playing #actions>a{ background: rgba(0,0,0,0.4); -webkit-transform: rotateX(180deg); }
 .playing #actions>a.show { background: transparent; -webkit-transform: rotateX(0deg); }
 

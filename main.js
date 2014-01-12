@@ -288,7 +288,7 @@ Fireball(F, {
          });
 
          if (action_type == 'i_feel'){
-            Fireball('#experience').child('feelings').push(text);
+            Fireball('#experience').child('feelings').push(input.value);
          }
 
          var count = actions ? Object.keys(actions).length : 0;
