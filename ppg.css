@@ -235,7 +235,7 @@ p { margin:0; padding: 5px 10px; background: #ddd; }
 .content { padding: 34px 0px; }
 .standalone .content { padding-top: 54px; }
 
-#timeline{ position: relative; }
+#timeline{ position: relative; padding-bottom: 60px; }
 /*#actions{ margin-left: 35px; margin-right: 35px; }*/
 
 
@@ -267,6 +267,7 @@ p { margin:0; padding: 5px 10px; background: #ddd; }
    display:block; 
    z-index: 2;
    width: 100%;
+   box-shadow: black -1px 0px 4px;
 }
 
 #actions >a { 
@@ -326,7 +327,12 @@ form input {
    width: 100%; 
    border:none;
    font-size:20px;
-   padding:3px 7px
+   padding:5px 10px;
+   margin:0;
+}
+
+input#add_sugg {
+  background:  rgb(229, 247, 248);
 }
 
 #compose_experience input {

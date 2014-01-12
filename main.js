@@ -497,7 +497,7 @@ Fireball(F, {
         if (action_type == 'i_walk') $('add_sugg').setAttribute('placeholder', "Where will you walk?");
         if (action_type == 'i_notice') $('add_sugg').setAttribute('placeholder', "What do you notice, nearby?");
         if (action_type == 'i_feel') $('add_sugg').setAttribute('placeholder', "What do you feel?");
-        $('add_sugg').focus();
+        setTimeout(function(){ $('add_sugg').focus(); }, 400)
       },
 
       '#sort_nearby': function(a){
