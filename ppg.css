@@ -24,11 +24,11 @@ header .tabs {
   background: none;
 }
 
-#fast_forward {
+/*#fast_forward {
   position: absolute;
   right: 5px;
 }
-
+*/
 .experience_post img {
   max-width: 20px;
   float: left;
@@ -192,6 +192,14 @@ button { padding: 10px 5px; font-size: 15px; }
   margin-top: 10px;
 }
 
+.experience_notes {
+  font-size: 12px;
+  color: #555;
+  margin-left: 30px;  
+}
+
+
+
 header {
    /*-webkit-filter: blur(8px);*/
    z-index: 10;
@@ -223,10 +231,10 @@ header > a:first-child { position: absolute; left: 5px; right: auto; }
   display: inline-block;
 }
 
-.experience_header .rewind {
+/*.experience_header .rewind {
    position: absolute; left: 5px;
 }
-
+*/
 p { margin:0; padding: 5px 10px; background: #ddd; }
 
 .more_options{ margin-top: 20px; }

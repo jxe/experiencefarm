@@ -150,11 +150,11 @@ function nextSong(){
      waveform_url: data.waveform_url,
      song_title: data.title,
      duration: data.duration / 1000,
-     created_at: (new Date()).getTime(),
-     placename: curplace
+     created_at: (new Date()).getTime()
   };
   var current_experience = Fireball.latest('#experience');
   if (!current_experience) {
+    if (curplace) song_info.placename = curplace;
     var id = Fireball('#experiences').push(song_info).name();
     Player.clear();
     Fireball.set('$experience', id);
@@ -343,6 +343,10 @@ Fireball(F, {
 
    calculated_fields:{
 
+      "#experiences placename_or_unknown": function(exp){
+        return exp.placename || "Unknown Location";
+      },
+
       "#experiences expnotices": function(exp){
          var dist = "";
          if (curloc && exp.start_loc) {
@@ -354,12 +358,12 @@ Fireball(F, {
            }
          }
 
-         var components = ["<b>" + exp.placename + "</b>"];
-         if (exp.feelings) components[0] += ("; Feelings: <b>" + values(exp.feelings).join(', ') +"</b>; Songs: <b>" + exp.song_title +"</b>");
-         else if (exp.song_title) components[0] += ("; Songs: <b>"+exp.song_title+"</b>");
+         if (exp.feelings){
+           var f = values(exp.feelings)[0].split(' ')[0];
+           return "<b>" + f +"</b> listening to <b>" + exp.song_title +"</b>";
+         }
+         else if (exp.song_title) return "Listened to <b>"+exp.song_title+"</b>";
          // if (exp.notice_count) components.push("noticed <b>" + exp.notice_count + "</b> things");
-         var msg = conjoin(components);
-         return msg;
       },
 
       "#experiences expstyle": function(exp){
@@ -431,7 +435,6 @@ Fireball(F, {
       '.noloc': function(){ return !curloc; },
       '#search_input': function(){ return !now_playing; },
       '#genres': function(){ return show_genres; },
-      '#listen_solo': function(){ return curloc; },
       '#now_playing_section': function(){ return now_playing; },
       '#pick_song': function(){ return searchq; },
       '#tab_listen': function(){ return page=='listen'; },
@@ -453,7 +456,7 @@ Fireball(F, {
       },
       '.nosong': function(){
          var latest = Fireball.latest('#experience');
-         return latest && !latest.song_title; 
+         return !latest || !latest.song_title; 
       }
    },
 
@@ -525,7 +528,7 @@ Fireball(F, {
          set_active_tab($('go_listen'));
       },
 
-      '#show_genres_button': function(){
+      '.show_genres': function(){
         show_genres = !show_genres;
       },
 

@@ -34,6 +34,7 @@
       <div class="tabs hasloc" style="margin-top:20px;">
          <a id="go_explore" class="active" href="#">Explore</a>
          <a id="go_listen" href="#">Listen</a>
+         <a href="#" class="hassong show_genres">&#9662;</a>
       </div>
 
       <div id="tab_explore">
@@ -41,18 +42,15 @@
             <li>
                <div class="experience_post">
                   <img src="track.png"/>
-                  <span class="notices_count" data-set="text:expnotices"></span>
+                  <b class="notices_count" data-set="text:placename_or_unknown"></b>
                </div>
                <div class="experience_header" data-set="style:expstyle"></div>
+               <div class="experience_notes" data-set="text:expnotices"></div>
             </li>
          </ul>
       </div>
 
       <div id="tab_listen">
-         <div id="listen_solo" style="text-align:center; margin-top:10px">
-            <a href="#" style="color:blue; " id="show_genres_button">+ add a song</a>
-         </div>
-
          <ul id="genres">
             <div style="text-align:center">
                <input type="search" id="search_input" placeholder="search for a song" />
@@ -92,13 +90,21 @@
 
 
 
-   <div id="experience" style="position:relative">
-      You're listening to <b data-set="text:song_title"></b>.
-      <div>
+   <div id="experience">
+      <div class="nosong" style="text-align:center; margin-top:20px">
+         <button class="show_genres">Browse genres...</button>
+      </div>
+
+      <div class="hassong" style="position:relative">
          <a href="#" id="delete" style="position:absolute; top:2; right:5">X</a>
-         <a class="hassong rewind" href="#">&ltri;&ltri;</a>
-         <a class="hassong" id="play" href="#">&#9654;</a>
-         <a href="#" id="fast_forward">&#9654;&#9654;</a>
+         <div style="text-align:center; margin-top:20px;">            
+            <a id="play" href="#">&#9654;</a>
+         </div>
+         <div style="margin:0px 15px; font-size: 14px ">
+            <a class="rewind" href="#">&#9664;&#9664;</a>
+            You're listening to <b data-set="text:song_title"></b>.
+            <a href="#" id="fast_forward">&#9654;&#9654;</a>
+         </div>
       </div>
 
       <div id="timeline" class="hassong">
