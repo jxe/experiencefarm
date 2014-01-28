@@ -1,4 +1,4 @@
-html{ font-size: 18px; margin:0; padding:0; font-family: sans-serif;  }
+html{  margin:0; padding:0; font-family: sans-serif;  }
 body{ margin:0; padding:0; position: relative; }
 
 header h1 { margin:0; text-align:center; font-size: 22px; display: inline; }
@@ -6,7 +6,7 @@ header {
   background: #9f9; position: fixed; top: 0; width: 100%; text-align:center; height: 34px; 
 line-height: 1.9em;
 color: white;
-text-shadow: rgba(0, 0, 0, 0.41) 0px -1px 1px;
+/*text-shadow: rgba(0, 0, 0, 0.41) 0px -1px 1px;*/
 }
 
 #city header {
@@ -107,14 +107,17 @@ header > a {
   text-align: center;
 }
 
+#experiences .experience_header{
+  margin: 5px;
+  margin-left: 30px;
+  margin-right: 30px;  
+}
+
 .experience_header {
   text-align: center;
   border: solid thin #ccc;
   border-radius: 5px;
-  margin: 5px;
-  margin-left: 30px;
   min-height: 60px;
-  margin-right: 30px;
 }
 
 .experience_header div {

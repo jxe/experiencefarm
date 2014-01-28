@@ -18,6 +18,14 @@
 <div class="page" id="city">
    <header>
       Feelings Nearby
+
+      <div class="tabs hasloc">
+         <a id="go_explore" class="active" href="#">Explore</a>
+         <a id="go_listen" href="#">Listen</a>
+         <a href="#" class="hassong show_genres">&#9662;</a>
+      </div>
+
+      <a id="play" class="hassong" href="#">&#9654;</a>
    </header>
    <div class="content">
 
@@ -26,15 +34,9 @@
       </div>
 
 
-      <div style="text-align:center; margin-top:20px;" class="hasloc">
+      <div style="text-align:center; background: #ccc; margin: 10px; border-radius: 5px; padding: 5px;" class="hasloc">
          <b id="top_location"> You're at XXXX </b>
          <div class="experience_header" id="top_map"></div>
-      </div>
-
-      <div class="tabs hasloc" style="margin-top:20px;">
-         <a id="go_explore" class="active" href="#">Explore</a>
-         <a id="go_listen" href="#">Listen</a>
-         <a href="#" class="hassong show_genres">&#9662;</a>
       </div>
 
       <div id="tab_explore">
@@ -97,9 +99,6 @@
 
       <div class="hassong" style="position:relative">
          <a href="#" id="delete" style="position:absolute; top:2; right:5">X</a>
-         <div style="text-align:center; margin-top:20px;">            
-            <a id="play" href="#">&#9654;</a>
-         </div>
          <div style="margin:0px 15px; font-size: 14px ">
             <a class="rewind" href="#">&#9664;&#9664;</a>
             You're listening to <b data-set="text:song_title"></b>.

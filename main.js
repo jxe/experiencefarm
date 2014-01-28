@@ -32,7 +32,7 @@ function with_loc(f){
       curloc = [ pos.coords.latitude, pos.coords.longitude ];
       store_loc();
 
-      $('top_location').innerHTML = "Your're at UNKNOWN LOCATION";
+      $('top_location').innerHTML = "You're at UNKNOWN LOCATION";
       var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
       mapUrl = mapUrl + curloc[0] + ',' + curloc[1];
       mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
@@ -94,7 +94,7 @@ function restore_loc(){
     if (now - data.at < 1000*60*6){
       curloc = data.loc;
 
-      $('top_location').innerHTML = "Your're at UNKNOWN LOCATION";
+      $('top_location').innerHTML = "You're at UNKNOWN LOCATION";
       var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
       mapUrl = mapUrl + curloc[0] + ',' + curloc[1];
       mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
