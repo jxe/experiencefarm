@@ -32,11 +32,11 @@ function with_loc(f){
       curloc = [ pos.coords.latitude, pos.coords.longitude ];
       store_loc();
 
-      $('top_location').innerHTML = "You're at UNKNOWN LOCATION";
-      var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
-      mapUrl = mapUrl + curloc[0] + ',' + curloc[1];
-      mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
-      $('top_map').style.backgroundImage = "url(" + mapUrl + ")";
+      // $('top_location').innerHTML = "You're at UNKNOWN LOCATION";
+      // var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
+      // mapUrl = mapUrl + curloc[0] + ',' + curloc[1];
+      // mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
+      // $('top_map').style.backgroundImage = "url(" + mapUrl + ")";
 
       f(pos);
     }, function(err) {
@@ -94,11 +94,11 @@ function restore_loc(){
     if (now - data.at < 1000*60*6){
       curloc = data.loc;
 
-      $('top_location').innerHTML = "You're at UNKNOWN LOCATION";
-      var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
-      mapUrl = mapUrl + curloc[0] + ',' + curloc[1];
-      mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
-      $('top_map').style.backgroundImage = "url(" + mapUrl + ")";
+      // $('top_location').innerHTML = "You're at UNKNOWN LOCATION";
+      // var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
+      // mapUrl = mapUrl + curloc[0] + ',' + curloc[1];
+      // mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
+      // $('top_map').style.backgroundImage = "url(" + mapUrl + ")";
     }
   }
 }
@@ -210,7 +210,7 @@ Fireball(F, {
         return data.sort(function(a,b){ return (b.created_at||0) - (a.created_at||0); });
       }],
       '#actions...'     : '/p2/actions/$experience',
-      '#comments...'    : '/comments/$experience',
+      // '#comments...'    : '/comments/$experience',
 
       '#now_playing_section' : function(paint){
         if (now_playing) paint({ title: now_playing.title });
@@ -248,11 +248,11 @@ Fireball(F, {
             return Fireball.refresh();
          }
          
-         $('top_location').innerHTML = "You're at " + v.placename;
-         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
-         mapUrl = mapUrl + v.start_loc[0] + ',' + v.start_loc[1];
-         mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
-         $('top_map').style.backgroundImage = "url(" + mapUrl + ")";
+         // $('top_location').innerHTML = "You're at " + v.placename;
+         // var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
+         // mapUrl = mapUrl + v.start_loc[0] + ',' + v.start_loc[1];
+         // mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
+         // $('top_map').style.backgroundImage = "url(" + mapUrl + ")";
 
          if (!more_than_30m_ago(v.created_at)) $('experience').className = 'editing';
          else $('experience').className = 'playing';
@@ -298,9 +298,9 @@ Fireball(F, {
    },
    
    on_change:{
-      "#add_comment": function(q){
-         Fireball('#comments').push({ text: q.value });
-      },
+      // "#add_comment": function(q){
+      //    Fireball('#comments').push({ text: q.value });
+      // },
 
       '#quality': function(q){
          Fireball('#experience').update({quality: q.value});
@@ -360,18 +360,19 @@ Fireball(F, {
 
          if (exp.feelings){
            var f = values(exp.feelings)[0].split(' ')[0];
-           return "<b>" + f +"</b> listening to <b>" + exp.song_title +"</b>";
+           return "<b>" + f +"</b>, " + dist;
          }
-         else if (exp.song_title) return "Listened to <b>"+exp.song_title+"</b>";
+         else if (exp.song_title) return dist;
          // if (exp.notice_count) components.push("noticed <b>" + exp.notice_count + "</b> things");
       },
 
       "#experiences expstyle": function(exp){
-         if (!exp.start_loc) return "";
-         var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
-         mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
-         mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
-         return "background-image: url(" + mapUrl + ");";
+        return "";
+         // if (!exp.start_loc) return "";
+         // var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
+         // mapUrl = mapUrl + exp.start_loc[0] + ',' + exp.start_loc[1];
+         // mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
+         // return "background-image: url(" + mapUrl + ");";
       },
 
       "#experience expstyle": function(exp){
@@ -437,7 +438,7 @@ Fireball(F, {
       '#genres': function(){ return show_genres; },
       '#now_playing_section': function(){ return now_playing; },
       '#pick_song': function(){ return searchq; },
-      '#tab_listen': function(){ return page=='listen'; },
+      '#tab_listen, .listen': function(){ return page=='listen'; },
       '#tab_explore': function(){ return page == 'explore'; },
       // '#city': function(){ return !Fireball.get('$experience'); },
       // '#experience': function(){ return Fireball.get('$experience'); },
@@ -461,26 +462,6 @@ Fireball(F, {
    },
 
    on_click: {
-
-    "#top_location": function(a){
-       var latest = Fireball.latest('#experience');
-       var editing = latest && $('experience').className == 'editing';
-       if (editing || !latest){
-         var loc = prompt("Where are you?");
-         if (loc && editing){
-            Fireball('#experience').update({'placename': loc});
-         } else if (loc && !latest) {
-            curplace = loc;
-            $('top_location').innerHTML = "You're at " + loc;
-         }
-       }
-
-         if (latest){
-
-         }
-         return latest && latest.song_title; 
-
-    },
 
     "#go_explore": function(a){
       set_active_tab(a);
@@ -521,7 +502,7 @@ Fireball(F, {
          window.location = "mailto:?subject=I%20made%20you%20a%20thing&body="+url;
       },
 
-      "#experiences li": function(el){
+      "#experiences .experience_tile": function(el){
          beep();
          Fireball.set('$experience', el.id);
          page = 'listen';

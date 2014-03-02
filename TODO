@@ -1,4 +1,97 @@
-Pairings
+Flashmob Radio
+
+
+* [5m] little beep when suggestion revealed
+   * while playing
+      * if none flipped, flip closest to playhead
+      * otherwise flip next or no-op
+      * Ring bell
+
+* [15m] (on_update #experience:) detects when you're not near the start location and says “please go to the start location”
+   * Check if you're near enough button
+   * Near enough global
+   * Set by location
+   * Reset on experience change
+
+* [5m] spinner btw play and playing
+
+* rewind/play/pause affects both players
+   * On play set value that starts countdown
+   * Start countdown fn that takes loc and date time and div to put countdown in
+   * On pause, set seek loc, same w rewind
+
+
+
+
+
+* flashmobradio: someone > 3 people
+* flashmobradio: “you're not close enough to listen. go 2mi west”
+
+
+LATER
+- bring "delete" back, but hidden behind a little gear
+- "fast forward" appears only if there's no actions and no placelabel
+
+
+- "explore further" (replace "seen" w. "events")
+- google places autocomplete
+- redesign "me too" and "explore further" etc, w. button flow
+
+
+Soundprints
+- DESIGN: a notion of presence
+	* (5m) confirm rewind when group room
+- "One other person is ready to record/play with you."
+- Read about firebase presence
+
+- DESIGN: redesign "me too" placement, confirm (sound! scroll!), and data model
+
+- BUGFIX-1: try just throwing away document clicks if we've wired up tap?
+
+====================
+
+- "Where are you?" prompt much bigger and bolder... modal?
+- Google places integration
+
+====================
+
+- BUGFIX-2: can we just block attempts to blur for 5s after an input autofocus?
+
+====================
+
+- BUG: Keyboard focus bug after selecting a tab
+
+- after "me too": "Let's explore?"
+
+- truck playheads together
+
+- capstone
+	- at the end: "invite other users" or "keep private"
+	- "add a capstone photo"
+		- Ideas:
+			- make a facial expression that goes with this soundtrack
+			- take a photo of your hat, shoes, etc
+
+
+
+FIX LATER
+
+
+- fourth tab: "I suggest"
+	- buttons are "okay", "no thanks"
+
+- with "i will": "good luck"
+	- seen, and done
+	- "me too!" or "Good luck!"
+
+- Prompt of the Week: Make one to a song, in a kind of venue, or with a certain kinds of noticing, doing, fitness, etc.
+- First page includes prompts and soundtracks?
+	- Prompt
+	- Number of responses / soundtracks recorded 
+		- in which cities
+- leave a sticker - sparkly play button
+
+
 
 * ON THE BUS / TRAIN: playhead sync! - rewind/play/pause affects both players
    * On play set value that starts countdown
@@ -6,10 +99,8 @@ Pairings
    * On pause, set seek loc, same w rewind
    * Player#pause_at(t0)
    * Player#stream(start_time, t0, indicator, track)
-   * (20m) confirm rewind
    
 Soon
-	- fix topbar layout to look like Ratchet / ios7
 	- truck playheads together
 	- Truck Genre playlists together for friends who are close and want to
 	- "You can't play this, it's too far away"
