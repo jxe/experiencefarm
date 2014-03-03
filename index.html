@@ -44,8 +44,6 @@
       </div>
 
       <div id="tab_listen">
-         <a href="#" class="hassong show_genres">&#9662;</a>
-         <a id="play" class="hassong" href="#">&#9654;</a>
          <ul id="genres">
             <center> <input type="search" id="search_input" placeholder="search for a song" /> </center>
             <li><a href="#">80s</a><li><a href="#">ambient</a><li><a href="#">americana</a> <li><a href="#">avantgarde</a> <li><a href="#">blues</a> <li><a href="#">chiptunes</a> <li><a href="#">choir</a> <li><a href="#">electronic</a> <li><a href="#">hip-hop</a> <li><a href="#">glitch</a> <li><a href="#">gregorian</a> <li><a href="#">gospel</a> <li><a href="#">orchestral</a> <li><a href="#">piano</a> <li><a href="#">arabic</a> <li><a href="#">chillout</a> <li><a href="#">classical</a> <li><a href="#">dirty South</a> <li><a href="#">dub</a> <li><a href="#">funk</a> <li><a href="#">jazz</a> <li><a href="#">trance</a>
@@ -54,48 +52,70 @@
 
          <div id="experience">
 
-            <h2>Who can unlock this box?</h2>
-            <ul>
-               <li><input type=checkbox checked>People within 10 meters of here
-               <li><input type=checkbox> <a href="#" class="show_genres">
-                  Who listen to 
-                  <span class="nosong"> a song </span>
-                  <b class="hassong" data-set="text:song_title"></b>
-                  for 20 seconds
-               </a>
-            </ul>
-
-            <div class="hassong" style="position:relative">
-               <a href="#" id="delete" style="position:absolute; top:2; right:5">X</a>
-               <div style="margin:0px 15px; font-size: 14px ">
+            <div class="authoring">
+               <h2>Who can unlock this box?</h2>
+               <ul>
+                  <li><input type=checkbox checked>People within 10 meters of here
+                  <li><input type=checkbox> <a href="#" class="show_genres">
+                     Who listen to 
+                     <span class="nosong"> a song </span>
+                     <b class="hassong" data-set="text:song_title"></b>
+                     for 20 seconds
+                     <a id="play" class="hassong" href="#">&#9654;</a>
+                     <a class="rewind" href="#">&#9664;&#9664;</a>
+                     <a href="#" id="delete" style="position:absolute; top:2; right:5">X</a>
+                     <a href="#" id="fast_forward">&#9654;&#9654;</a>
+                  </a>
+               </ul>
+            </div>
+            <div class="unlocked">
+               <h2>UNLOCKED</h2>
+               <ul>
+                  <li>You are within 100m of where this was created</li>
+                  <li class="hassong">You've listened to <b class="hassong" data-set="text:song_title"></b>
+                  <a id="play" class="hassong" href="#">&#9654;</a>
                   <a class="rewind" href="#">&#9664;&#9664;</a>
-                  <a href="#" id="fast_forward">&#9654;&#9654;</a>
-               </div>
+                  </li>
+               </ul>
+            </div>
+            <div class="locked">
+               <h2>UNLOCK THIS BOX</h2>
+               <ul>
+                  <li class="close_enough">You're within 100m of where it was created</li>
+                  <li class="not_close_enough">Get within 100m of where it was created</li>
+                  <li class="close_enough">Listen to <b class="hassong" data-set="text:song_title"></b>
+                     for 20 seconds
+                     <a id="play" class="hassong" href="#">&#9654;</a>
+                     </li>
+               </ul>
             </div>
 
             <h2>Posts (visible when unlocked)</h2>
-            <form class="fake_action notsaved">
-               <div class="tabs">
-                  <a id="i_notice" href="#">I notice</a>
-                  <a id="i_will" href="#">I will</a>
-                  <a id="i_walk" href="#">I'll walk</a>
-                  <a id="i_feel" class="active" href="#">I feel</a>
-               </div>
-               <input id="add_sugg" placeholder="What does it feel like?">
-            </form>
+            <div class="locked">LOCKED</div>
+            <div class="authoring_or_unlocked">
+               <form class="fake_action notsaved">
+                  <div class="tabs">
+                     <a id="i_notice" href="#">I notice</a>
+                     <a id="i_will" href="#">I will</a>
+                     <a id="i_walk" href="#">I'll walk</a>
+                     <a id="i_feel" class="active" href="#">I feel</a>
+                  </div>
+                  <input id="add_sugg" placeholder="What does it feel like?">
+               </form>
 
-            <div id="timeline" class="hassong">
-               <div id="playhead"></div>
-               <div id="actions">
-                  <a>
-                     <div class="backdrop" data-set="style:#actions:style"></div>
-                     <div class="vbar" data-set="style:#actions:barstyle"></div>
-                     <i data-set="text:#actions:type"></i>
-                     <span data-set="text:#actions:text"></span>
-                     <span data-set="text:#actions:button"></span>
-                  </a>
-               </div> 
-            </div> <!-- timeline -->
+               <div id="timeline" class="hassong">
+                  <div id="playhead"></div>
+                  <div id="actions">
+                     <a>
+                        <div class="backdrop" data-set="style:#actions:style"></div>
+                        <div class="vbar" data-set="style:#actions:barstyle"></div>
+                        <i data-set="text:#actions:type"></i>
+                        <span data-set="text:#actions:text"></span>
+                        <span data-set="text:#actions:button"></span>
+                     </a>
+                  </div> 
+               </div> <!-- timeline -->
+            </div><!-- unlocked -->
          </div><!-- experience -->
       </div><!-- tab_listen -->
    </div><!-- content -->

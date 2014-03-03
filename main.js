@@ -1,7 +1,7 @@
 var page = "explore", searchq;
 var F = new Firebase("http://songwalks.firebaseio.com/");
 var page, next_flip_time, sorted_actions, sort, show_genres, playlist, action_type;
-var curloc, curplace, now_playing;
+var curloc, curplace, now_playing, has_played_song;
 var sessionid = Math.floor(Math.random()*100000000);
 
 function $(x){ return document.getElementById(x); }
@@ -31,13 +31,6 @@ function with_loc(f){
     function(pos){
       curloc = [ pos.coords.latitude, pos.coords.longitude ];
       store_loc();
-
-      // $('top_location').innerHTML = "You're at UNKNOWN LOCATION";
-      // var mapUrl = "http://maps.google.com/maps/api/staticmap?markers=size:tiny%7C";
-      // mapUrl = mapUrl + curloc[0] + ',' + curloc[1];
-      // mapUrl = mapUrl + '&zoom=16&size=264x60&maptype=roadmap&sensor=true&key=AIzaSyA51bUQ2qrcA4OqxkBVktwFkxH9XEqcG3A';
-      // $('top_map').style.backgroundImage = "url(" + mapUrl + ")";
-
       f(pos);
     }, function(err) {
       console.warn('ERROR(' + err.code + '): ' + err.message);
@@ -259,6 +252,8 @@ Fireball(F, {
          if (!v.soundcloud_url) return Fireball.refresh();
          if (Player.current.track == v.soundcloud_url) return Fireball.refresh();
 
+         has_played_song = null;
+
          $('play').innerHTML = "&#8230;";
          Player.stream('load', v.soundcloud_url, $('play'), {
             whileplaying: function(){
@@ -443,6 +438,58 @@ Fireball(F, {
       // '#city': function(){ return !Fireball.get('$experience'); },
       // '#experience': function(){ return Fireball.get('$experience'); },
 
+      '.authoring':function(){
+         var latest = Fireball.latest('#experience');
+         if (!latest) return false;
+         if (!more_than_30m_ago(latest.created_at)) return true;
+         return false;
+      },
+
+      '.locked':function(){
+         var latest = Fireball.latest('#experience');
+         if (!latest) return true;
+         if (!more_than_30m_ago(latest.created_at)) return false;
+         if (latest.song_title && !has_played_song) return true;
+         var km = distance(latest.start_loc[0], latest.start_loc[1], curloc[0], curloc[1]);
+         if (km > 1) return true;
+         return false;
+      },
+
+      '.authoring_or_unlocked':function(){
+         var latest = Fireball.latest('#experience');
+         if (!latest) return false;
+         if (!more_than_30m_ago(latest.created_at)) return true;
+         if (latest.song_title && !has_played_song) return false;
+         var km = distance(latest.start_loc[0], latest.start_loc[1], curloc[0], curloc[1]);
+         if (km > 1) return false;
+         return true;
+      },
+
+      '.unlocked':function(){
+         var latest = Fireball.latest('#experience');
+         if (!latest) return false;
+         if (!more_than_30m_ago(latest.created_at)) return false;
+         if (latest.song_title && !has_played_song) return false;
+         var km = distance(latest.start_loc[0], latest.start_loc[1], curloc[0], curloc[1]);
+         if (km > 1) return false;
+         return true;
+      },
+
+      '.close_enough':function(){
+         var latest = Fireball.latest('#experience');
+         if (!latest) return false;
+         var km = distance(latest.start_loc[0], latest.start_loc[1], curloc[0], curloc[1]);
+         if (km > 1) return false;
+         return true;
+      },
+      '.not_close_enough':function(){
+         var latest = Fireball.latest('#experience');
+         if (!latest) return false;
+         var km = distance(latest.start_loc[0], latest.start_loc[1], curloc[0], curloc[1]);
+         if (km > 1) return true;
+         return false;
+      },
+
       '.saved': function(){
          var exp = Fireball.latest('#experience');
          return exp && more_than_30m_ago(exp.created_at);
@@ -464,12 +511,17 @@ Fireball(F, {
    on_click: {
 
     "#go_explore": function(a){
-      set_active_tab(a);
+      Fireball.set("$experience", null);
       page = 'explore';
     },
     "#go_listen": function(a){
-      set_active_tab(a);
-      page = 'listen'; 
+        var song_info = { start_loc: curloc, created_at: (new Date()).getTime() };
+        if (curplace) song_info.placename = curplace;
+        var id = Fireball('#experiences').push(song_info).name();
+        Player.clear();
+        Fireball.set('$experience', id);
+        page = 'listen';
+        Fireball.refresh();
     },
 
     "#genres a": function(a){
